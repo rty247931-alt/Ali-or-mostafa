@@ -8,7 +8,7 @@ import { paymobConfigured } from "@/lib/paymob";
 
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/, "لون غير صحيح");
 const txt = (n: number) => z.string().trim().max(n);
-export const settingsSchema = z.object({
+const settingsSchema = z.object({
   "store.name": txt(80).min(1), "store.description": txt(300),
   "theme.primary": hex, "theme.ink": hex,
   "hero.title": txt(120), "hero.subtitle": txt(250), "hero.image": txt(500),
