@@ -45,10 +45,8 @@ async function main() {
     await db.inventory.update({ where: { variantId: variant.id }, data: { onHand: 2 } });
     const key = randomUUID() + randomUUID();
     const dup = await Promise.allSettled([createOrder(input(variant.id, { idempotencyKey: key }), null), createOrder(input(variant.id, { idempotencyKey: key }), null)]);
-    const nums = new Set(
-  dup.flatMap((x) =>
-    x.status === "fulfilled" ? [x.value.number] : []
-  )
+const nums = new Set(
+  dup.flatMap((x) => (x.status === "fulfilled" ? [x.value.number] : []))
 );
     check("same idempotency key twice creates ONE order", nums.size === 1);
     check("stock deducted once for the duplicate submit", (await stock(variant.id)) === 1);
