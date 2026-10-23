@@ -20,6 +20,9 @@ const settingsSchema = z.object({
   "checkout.guest.enabled": z.boolean(),
   "tax.enabled": z.boolean(), "tax.rate": z.number().min(0).max(100), "tax.included": z.boolean(),
   "payments.online.enabled": z.boolean(),
+  "payments.wallet.enabled": z.boolean(),
+  "payments.wallet.vodafone": txt(40), "payments.wallet.orange": txt(40), "payments.wallet.etisalat": txt(40),
+  "payments.wallet.instructions": txt(1500),
   maintenance: z.boolean(),
 }).partial().strict();
 
@@ -36,6 +39,12 @@ export const GET = route(async () => {
 export const PATCH = route(async (req) => {
   const { userId } = await requirePerm("settings.update");
   const d = settingsSchema.parse(await req.json());
+  if (d["payments.wallet.enabled"] === true) {
+    if (!d["payments.wallet.vodafone"] && !d["payments.wallet.orange"] && !d["payments.wallet.etisalat"]) {
+      const existing = await db.storeSetting.findMany({ where: { key: { in: ["payments.wallet.vodafone", "payments.wallet.orange", "payments.wallet.etisalat"] } } });
+      if (!existing.some((r) => typeof r.value === "string" && r.value.trim())) throw new ApiError(400, "أدخل رقم محفظة واحدة على الأقل قبل التفعيل");
+    }
+  }
   if (d["payments.online.enabled"] === true) {
     // An integration is never "on" just because someone ticked a box: it must be configured AND pass the live test.
     if (!paymobConfigured()) throw new ApiError(400, "بيانات بوابة الدفع غير مضبوطة في متغيرات البيئة");
