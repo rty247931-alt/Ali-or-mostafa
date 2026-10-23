@@ -3,7 +3,7 @@ import { requirePerm } from "@/lib/perm";
 import { route } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";
-const RELEASE_AT = new Date("2026-11-01T00:00:00+02:00");
+const RELEASE_AT = new Date("2026-10-30T00:00:00+02:00");
 
 export const POST = route(async () => {
   await requirePerm("settings.update");
