@@ -63,11 +63,19 @@ export async function saveImage(file: File, folder = "products"): Promise<string
   if (!sniffed) throw new ApiError(400, "الملف ليس صورة مدعومة (JPG أو PNG أو WEBP)");
   const { buf, ...type } = await optimize(raw, sniffed);
   const key = `${folder}/${randomUUID()}.${type.ext}`;
-  if ((process.env.STORAGE_DRIVER ?? "local") === "s3") return putS3(key, buf, type.mime);
+  const driver = process.env.STORAGE_DRIVER ?? "local";
+  if (driver === "vercel-blob") {
+    // Simplest option on Vercel: Storage > Create > Blob. Vercel adds BLOB_READ_WRITE_TOKEN automatically.
+    if (!process.env.BLOB_READ_WRITE_TOKEN) throw new ApiError(500, "أنشئ Blob Store من Vercel (Storage) واربطه بالمشروع ثم أعد النشر");
+    const { put } = await import("@vercel/blob");
+    const r = await put(key, buf, { access: "public", contentType: type.mime, addRandomSuffix: false });
+    return r.url;
+  }
+  if (driver === "s3") return putS3(key, buf, type.mime);
   if (process.env.NODE_ENV === "production" && process.env.ALLOW_LOCAL_UPLOADS !== "1")
-    throw new ApiError(500, "في الإنتاج استخدم STORAGE_DRIVER=s3 (الاستضافة لا تحفظ ملفات محلية)");
+    throw new ApiError(500, "تخزين الصور غير مُعد: ضع STORAGE_DRIVER=vercel-blob (بعد إنشاء Blob في Vercel) أو s3");
   const dir = path.join(process.cwd(), "public", "uploads", folder);
   await mkdir(dir, { recursive: true });
   await writeFile(path.join(process.cwd(), "public", "uploads", key), buf);
   return `/uploads/${key}`;
-}
+  }
