@@ -86,9 +86,9 @@ function Form({ entity, fields, row, canDelete, onDone }: { entity: string; fiel
                 <div style={{ marginTop: 8 }}>
                   <label className="btn o sm" style={{ display: "inline-block" }}>
                     {uploading === f.key ? "جارٍ رفع الصورة..." : "اختيار صورة من الجهاز"}
-                    <input type="file" accept="image/jpeg,image/png,image/webp" hidden disabled={!!uploading || busy} onChange={(e) => { void uploadImage(f.key, e.target.files?.[0]); e.currentTarget.value = ""; }} />
+                    <input type="file" accept="image/*" hidden disabled={!!uploading || busy} onChange={(e) => { void uploadImage(f.key, e.target.files?.[0]); e.currentTarget.value = ""; }} />
                   </label>
-                  <span style={{ marginInlineStart: 8, fontSize: 12, color: "var(--mu)" }}>JPG / PNG / WEBP — حتى 5 ميجابايت</span>
+                  <span style={{ marginInlineStart: 8, fontSize: 12, color: "var(--mu)" }}>JPG / PNG / WEBP / GIF / AVIF وغيرها من صيغ الصور المدعومة — بدون تصغير</span>
                   {typeof vals[f.key] === "string" && vals[f.key] && <div style={{ marginTop: 8 }}><img src={vals[f.key]} alt="معاينة الصورة" style={{ maxWidth: 180, maxHeight: 120, objectFit: "contain", borderRadius: 8 }} /></div>}
                 </div>
               )}
