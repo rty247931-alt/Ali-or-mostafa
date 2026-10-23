@@ -40,10 +40,14 @@ export const PATCH = route(async (req) => {
   const { userId } = await requirePerm("settings.update");
   const d = settingsSchema.parse(await req.json());
   if (d["payments.wallet.enabled"] === true) {
-    if (!d["payments.wallet.vodafone"] && !d["payments.wallet.orange"] && !d["payments.wallet.etisalat"]) {
-      const existing = await db.storeSetting.findMany({ where: { key: { in: ["payments.wallet.vodafone", "payments.wallet.orange", "payments.wallet.etisalat"] } } });
-      if (!existing.some((r) => typeof r.value === "string" && r.value.trim())) throw new ApiError(400, "أدخل رقم محفظة واحدة على الأقل قبل التفعيل");
-    }
+    const walletKeys = ["payments.wallet.vodafone", "payments.wallet.orange", "payments.wallet.etisalat"] as const;
+    const existing = await db.storeSetting.findMany({ where: { key: { in: [...walletKeys] } } });
+    const current = new Map(existing.map((r) => [r.key, r.value]));
+    const anyWallet = walletKeys.some((key) => {
+      const value = d[key] !== undefined ? d[key] : current.get(key);
+      return typeof value === "string" && value.trim().length > 0;
+    });
+    if (!anyWallet) throw new ApiError(400, "أدخل رقم محفظة واحدة على الأقل قبل التفعيل");
   }
   if (d["payments.online.enabled"] === true) {
     // An integration is never "on" just because someone ticked a box: it must be configured AND pass the live test.
