@@ -33,7 +33,25 @@ function Form({ entity, fields, row, canDelete, onDone }: { entity: string; fiel
   const [errs, setErrs] = useState<Record<string, string>>({});
   const [msg, setMsg] = useState<{ t: string; ok: boolean } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState<string | null>(null);
   const set = (k: string, v: unknown) => setVals({ ...vals, [k]: v });
+
+  async function uploadImage(fieldKey: string, file?: File) {
+    if (!file) return;
+    setUploading(fieldKey); setMsg(null);
+    try {
+      const fd = new FormData();
+      fd.set("file", file);
+      fd.set("entity", entity);
+      const r = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error ?? "تعذر رفع الصورة");
+      set(fieldKey, d.url);
+      setMsg({ t: "تم رفع الصورة. اضغط حفظ لتثبيت التغيير.", ok: true });
+    } catch (e) {
+      setMsg({ t: e instanceof Error ? e.message : "تعذر رفع الصورة", ok: false });
+    } finally { setUploading(null); }
+  }
 
   async function call(method: string, url: string, body?: unknown) {
     setBusy(true); setMsg(null); setErrs({});
@@ -64,6 +82,16 @@ function Form({ entity, fields, row, canDelete, onDone }: { entity: string; fiel
                     {!f.default && <option value="">اختر</option>}{f.options?.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </select>
                 ) : <input id={`${entity}-${row?.id ?? "new"}-${f.key}`} className="in" type={f.type === "number" ? "number" : f.type === "datetime" ? "datetime-local" : "text"} step="any" value={vals[f.key]} readOnly={f.readOnly} onChange={(e) => set(f.key, e.target.value)} />}
+              {["imageUrl", "logoUrl"].includes(f.key) && ["categories", "brands", "banners"].includes(entity) && !f.readOnly && (
+                <div style={{ marginTop: 8 }}>
+                  <label className="btn o sm" style={{ display: "inline-block" }}>
+                    {uploading === f.key ? "جارٍ رفع الصورة..." : "اختيار صورة من الجهاز"}
+                    <input type="file" accept="image/jpeg,image/png,image/webp" hidden disabled={!!uploading || busy} onChange={(e) => { void uploadImage(f.key, e.target.files?.[0]); e.currentTarget.value = ""; }} />
+                  </label>
+                  <span style={{ marginInlineStart: 8, fontSize: 12, color: "var(--mu)" }}>JPG / PNG / WEBP — حتى 5 ميجابايت</span>
+                  {typeof vals[f.key] === "string" && vals[f.key] && <div style={{ marginTop: 8 }}><img src={vals[f.key]} alt="معاينة الصورة" style={{ maxWidth: 180, maxHeight: 120, objectFit: "contain", borderRadius: 8 }} /></div>}
+                </div>
+              )}
             </>
           )}
           {f.hint && <div style={{ fontSize: 12, color: "var(--mu)" }}>{f.hint}</div>}
