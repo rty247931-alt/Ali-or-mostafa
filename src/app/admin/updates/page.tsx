@@ -3,7 +3,7 @@ import ReleaseAction from "./ReleaseAction";
 
 export const dynamic = "force-dynamic";
 
-const RELEASE_AT = new Date("2026-11-01T00:00:00+02:00");
+const RELEASE_AT = new Date("2026-10-30T00:00:00+02:00");
 const features = [
   { title: "تجديد شامل لواجهة المتجر", detail: "تصميم أسرع وأوضح ومتوافق مع الموبايل والكمبيوتر." },
   { title: "إحصائيات ومقارنة المبيعات", detail: "تقارير المبيعات والأرباح والمنتجات الأكثر مبيعًا والمخزون المنخفض." },
@@ -43,9 +43,9 @@ export default function AdminUpdatesPage() {
                 <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-bold">الإصدار الرئيسي 2.0</span>
                 <span className={`rounded-full px-3 py-1 text-xs font-bold ${unlocked ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}>{unlocked ? "موعد الإصدار وصل" : "مغلق حتى موعد الإصدار"}</span>
               </div>
-              <h2 className="text-2xl font-bold">التحديث الضخم — نوفمبر 2026</h2>
+              <h2 className="text-2xl font-bold">التحديث الضخم — 30 أكتوبر 2026</h2>
               <p className="mt-2 text-sm text-gray-600">موعد الفتح: {releaseDate}، الساعة 12:00 صباحًا بتوقيت القاهرة.</p>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-600">لن تظهر إصدارات شهرية منفصلة قبل هذا الموعد. كل البنود التالية ضمن إصدار واحد، ويجب اختبارها قبل نشره.</p>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-600">لن تظهر إصدارات شهرية منفصلة قبل هذا الموعد. زر «تحديث الآن» ظاهر من دلوقتي، وميعاد تفعيله يوم 30 أكتوبر 2026. البنود التالية هي نطاق الإصدار المخطط، ولازم اختبارها قبل النشر.</p>
             </div>
           </div>
           <ReleaseAction configured={configured} />
