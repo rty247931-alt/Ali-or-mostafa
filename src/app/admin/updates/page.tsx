@@ -4,20 +4,6 @@ export const dynamic = "force-dynamic";
 
 const RELEASE_AT = new Date("2026-11-01T00:00:00+02:00");
 
-function cairoNow() {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Africa/Cairo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(new Date());
-  const get = (type: string) => parts.find((part) => part.type === type)?.value ?? "00";
-  return new Date(`${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}:00+02:00`);
-}
-
 const features = [
   { title: "تجديد شامل لواجهة المتجر", detail: "تصميم أسرع وأوضح ومتوافق مع الموبايل والكمبيوتر." },
   { title: "إحصائيات ومقارنة المبيعات", detail: "تقارير المبيعات والأرباح والمنتجات الأكثر مبيعًا والمخزون المنخفض." },
@@ -32,8 +18,9 @@ const features = [
 ];
 
 export default function AdminUpdatesPage() {
-  const now = cairoNow();
-  const unlocked = now.getTime() >= RELEASE_AT.getTime();
+  // Compare absolute timestamps so the lock follows Cairo's release instant
+  // without reconstructing local time using a hard-coded UTC offset.
+  const unlocked = Date.now() >= RELEASE_AT.getTime();
   const releaseDate = new Intl.DateTimeFormat("ar-EG", {
     timeZone: "Africa/Cairo",
     day: "numeric",
