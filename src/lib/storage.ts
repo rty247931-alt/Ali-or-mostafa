@@ -3,13 +3,15 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { ApiError } from "./errors";
 
-const MAX_BYTES = 5 * 1024 * 1024;
-
 /** Detects the real type from the file's first bytes. The client-supplied MIME type is never trusted. */
 export function sniffImage(b: Buffer): { ext: string; mime: string } | null {
-  if (b.length > 12 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return { ext: "jpg", mime: "image/jpeg" };
+  if (b.length > 2 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return { ext: "jpg", mime: "image/jpeg" };
   if (b.length > 8 && b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return { ext: "png", mime: "image/png" };
   if (b.length > 12 && b.subarray(0, 4).toString() === "RIFF" && b.subarray(8, 12).toString() === "WEBP") return { ext: "webp", mime: "image/webp" };
+  if (b.length > 6 && ["GIF87a", "GIF89a"].includes(b.subarray(0, 6).toString())) return { ext: "gif", mime: "image/gif" };
+  if (b.length > 14 && b.subarray(0, 2).toString() === "BM") return { ext: "bmp", mime: "image/bmp" };
+  if (b.length > 4 && (b.subarray(0, 4).toString("hex") === "49492a00" || b.subarray(0, 4).toString("hex") === "4d4d002a")) return { ext: "tif", mime: "image/tiff" };
+  if (b.length > 12 && b.subarray(4, 12).toString().includes("ftyp") && /avif|avis/.test(b.subarray(8, 16).toString())) return { ext: "avif", mime: "image/avif" };
   return null;
 }
 
@@ -45,23 +47,12 @@ async function putS3(key: string, body: Buffer, contentType: string) {
   return `${pub.replace(/\/$/, "")}/${key}`;
 }
 
-/** Resizes to max 1600px and converts to WebP when sharp is available; otherwise keeps the original bytes. */
-async function optimize(buf: Buffer, type: { ext: string; mime: string }) {
-  try {
-    const sharp = (await import("sharp")).default;
-    const out = await sharp(buf).rotate().resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true }).webp({ quality: 82 }).toBuffer();
-    return { buf: out, ext: "webp", mime: "image/webp" };
-  } catch {
-    return { buf, ...type };
-  }
-}
-
 export async function saveImage(file: File, folder = "products"): Promise<string> {
-  if (file.size > MAX_BYTES) throw new ApiError(400, "حجم الصورة أكبر من ٥ ميجابايت");
   const raw = Buffer.from(await file.arrayBuffer());
   const sniffed = sniffImage(raw);
-  if (!sniffed) throw new ApiError(400, "الملف ليس صورة مدعومة (JPG أو PNG أو WEBP)");
-  const { buf, ...type } = await optimize(raw, sniffed);
+  if (!sniffed) throw new ApiError(400, "صيغة الصورة غير مدعومة. استخدم JPG أو PNG أو WEBP أو GIF أو AVIF أو BMP أو TIFF.");
+  const buf = raw;
+  const type = sniffed;
   const key = `${folder}/${randomUUID()}.${type.ext}`;
   const driver = process.env.STORAGE_DRIVER ?? "local";
   if (driver === "vercel-blob") {
