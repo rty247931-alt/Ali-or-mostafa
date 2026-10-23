@@ -22,6 +22,11 @@ export default function Checkout() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
+    const first = (["vodafone", "orange", "etisalat"] as const).find((k) => !!walletData.wallets[k]);
+    if (first) setWalletProvider(first);
+  }, [walletData.wallets.vodafone, walletData.wallets.orange, walletData.wallets.etisalat]);
+
+  useEffect(() => {
     // One idempotency key per checkout attempt: resubmitting the same order can never create two.
     key.current = sessionStorage.getItem("st_idem") ?? crypto.randomUUID();
     sessionStorage.setItem("st_idem", key.current);
@@ -74,7 +79,7 @@ export default function Checkout() {
         if (pr.ok && pd.url) { window.location.href = pd.url; return; }
       }
       router.replace(`/order/${d.number}?phone=${encodeURIComponent(d.phone)}`);
-    } catch { setMsg("فشل الاتصال بالخادم، حاول مرة أخرى. لن يتكرر الطلب."); setBusy(false); }
+    } catch (e) { setMsg(e instanceof Error ? e.message : "فشل الاتصال بالخادم، حاول مرة أخرى. لن يتكرر الطلب."); setBusy(false); }
   }
 
   const field = (k: keyof typeof f, label: string, extra?: object) => (
