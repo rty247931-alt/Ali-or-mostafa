@@ -12,6 +12,22 @@ export type AdminP = {
 };
 type Perms = { price: boolean; update: boolean; stock: boolean };
 
+/** Shrinks phone photos in the browser (max 1600px, JPEG 85%) so uploads are small and fast and pass hosting size limits. */
+async function shrink(file: File): Promise<File> {
+  try {
+    const bmp = await createImageBitmap(file);
+    const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+    const w = Math.round(bmp.width * scale), h = Math.round(bmp.height * scale);
+    const c = document.createElement("canvas");
+    c.width = w; c.height = h;
+    c.getContext("2d")!.drawImage(bmp, 0, 0, w, h);
+    const blob: Blob | null = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.85));
+    return blob ? new File([blob], "photo.jpg", { type: "image/jpeg" }) : file;
+  } catch {
+    return file;
+  }
+}
+
 async function call(url: string, method: string, body?: unknown) {
   const r = await fetch(url, { method, headers: body instanceof FormData ? undefined : { "Content-Type": "application/json" }, body: body instanceof FormData ? body : body ? JSON.stringify(body) : undefined });
   const d = await r.json().catch(() => ({}));
@@ -27,6 +43,7 @@ export default function AdminProductRow({ p, perms, categories, brands, selected
   const [adj, setAdj] = useState<Record<string, { type: string; qty: string; reason: string }>>({});
   const [nv, setNv] = useState({ colorName: "", sizeLabel: "", quantity: "0" });
   const [imgColor, setImgColor] = useState("");
+  const [upl, setUpl] = useState("");
   const [msg, setMsg] = useState<{ t: string; ok: boolean } | null>(null);
   const colors = [...new Set(p.variants.map((v) => v.color))];
 
@@ -80,12 +97,21 @@ export default function AdminProductRow({ p, perms, categories, brands, selected
             </div>
           ))}</div>
           <select className="in" style={{ width: "auto" }} value={imgColor} onChange={(e) => setImgColor(e.target.value)} aria-label="لون الصورة"><option value="">صورة لكل الألوان</option>{colors.map((c) => <option key={c}>{c}</option>)}</select>{" "}
-          <input type="file" accept="image/jpeg,image/png,image/webp" aria-label="رفع صورة" onChange={(e) => {
-            const file = e.target.files?.[0]; if (!file) return;
-            const fd = new FormData(); fd.append("file", file); fd.append("colorName", imgColor);
-            run(() => call(`/api/admin/products/${p.id}/images`, "POST", fd), "تم رفع الصورة"); e.target.value = "";
+          <input type="file" accept="image/*" multiple aria-label="رفع صور" onChange={async (e) => {
+            const files = Array.from(e.target.files ?? []).slice(0, 10); e.target.value = "";
+            if (!files.length) return;
+            let done = 0;
+            for (const f of files) {
+              setUpl(`جاري رفع الصورة ${done + 1} من ${files.length}…`);
+              try {
+                const fd = new FormData(); fd.append("file", await shrink(f)); fd.append("colorName", imgColor);
+                await call(`/api/admin/products/${p.id}/images`, "POST", fd); done++;
+              } catch (err) { setMsg({ t: `توقف الرفع عند الصورة ${done + 1}: ${err instanceof Error ? err.message : "فشل"}`, ok: false }); setUpl(""); router.refresh(); return; }
+            }
+            setUpl(""); setMsg({ t: `تم رفع ${done} صورة`, ok: true }); router.refresh();
           }} />
-          <div style={{ fontSize: 12, color: "var(--mu)" }}>JPG أو PNG أو WEBP حتى ٥ ميجا. يُفضّل تصغير الصورة قبل الرفع (مثلًا ١٢٠٠ بكسل).</div>
+          {upl && <div role="status" style={{ color: "var(--ac)" }}>{upl}</div>}
+          <div style={{ fontSize: 12, color: "var(--mu)" }}>تقدر تختار أكتر من صورة مرة واحدة (حتى ١٠). الصور بتتصغّر تلقائيًا قبل الرفع، فصور الموبايل العادية تنفع.</div>
         </details>
       )}
 
@@ -115,4 +141,4 @@ export default function AdminProductRow({ p, perms, categories, brands, selected
       {msg && <div className={msg.ok ? "ok" : "err"} role="status">{msg.t}</div>}
     </details>
   );
-}
+                                             }
