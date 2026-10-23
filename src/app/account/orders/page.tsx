@@ -17,6 +17,7 @@ export default async function MyOrders() {
   return (
     <div className="pg">
       <h1>أهلًا {user?.fullName.split(" ")[0]}</h1><LogoutButton /> <Link className="btn o sm" href="/account/profile">بياناتي وعناويني</Link> <Link className="btn o sm" href="/account/favorites">المفضلة</Link>
+      <div className="box" style={{ margin: "16px 0" }}><b>نقاط الولاء</b><p>اكسب نقطة لكل 10 جنيه من قيمة الطلب بعد تسليمه. <Link href="/account/loyalty">عرض رصيدك وسجل النقاط ←</Link></p></div>
       <h2>طلباتي</h2>
       {orders.length === 0 ? <div className="empty">لا توجد طلبات بعد.</div> : orders.map((o) => (
         <Link key={o.id} href={`/order/${o.number}`} className="box" style={{ display: "block", marginBottom: 8 }}>
