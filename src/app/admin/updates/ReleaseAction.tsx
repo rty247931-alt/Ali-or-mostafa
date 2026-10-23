@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const RELEASE_AT = new Date("2026-11-01T00:00:00+02:00").getTime();
+const RELEASE_AT = new Date("2026-10-30T00:00:00+02:00").getTime();
 
 export default function ReleaseAction({ configured }: { configured: boolean }) {
   const [now, setNow] = useState(0);
@@ -38,20 +38,13 @@ export default function ReleaseAction({ configured }: { configured: boolean }) {
     }
   }
 
-  if (!unlocked) return (
-    <div className="min-w-44 rounded-xl border border-gray-200 bg-gray-50 p-4 text-center">
-      <p className="text-sm font-bold text-gray-700">التحديث مقفول</p>
-      <p className="mt-1 text-xs text-gray-500">يفتح تلقائيًا في الموعد المحدد</p>
-    </div>
-  );
-
   return (
     <div className="min-w-44 rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
-      <p className="font-bold">الإصدار مفتوح زمنيًا</p>
-      <p className="mt-1 text-xs leading-5">الزر يطلب بدء نشر من Vercel فقط؛ لا يطبّق تغييرات قاعدة البيانات ولا يثبت نجاح النشر.</p>
-      <button type="button" onClick={startRelease} disabled={busy || !configured}
+      <p className="font-bold">{unlocked ? "الإصدار مفتوح زمنيًا" : "التحديث مجدول ليوم 30 أكتوبر"}</p>
+      <p className="mt-1 text-xs leading-5">الزر ظاهر من دلوقتي، ويتفعّل يوم 30 أكتوبر. الضغط عليه يطلب نشرًا من Vercel فقط ولا يثبت اكتمال التحديث أو نجاح الاختبارات.</p>
+      <button type="button" onClick={startRelease} disabled={!unlocked || busy || !configured}
         className="mt-3 w-full rounded-lg bg-gray-900 px-4 py-2 font-bold text-white disabled:cursor-not-allowed disabled:opacity-50">
-        {busy ? "جارٍ إرسال الطلب…" : configured ? "بدء التحديث على Vercel" : "النشر غير مهيأ"}
+        {busy ? "جارٍ إرسال الطلب…" : !unlocked ? "تحديث الآن — يتفعّل يوم 30 أكتوبر" : configured ? "بدء التحديث على Vercel" : "النشر غير مهيأ"}
       </button>
       {!configured && <p className="mt-2 text-xs">يلزم إعداد VERCEL_RELEASE_DEPLOY_HOOK_URL على الخادم.</p>}
       {message && <p role="status" className={`mt-3 break-words text-xs leading-5 ${error ? "text-red-700" : "text-emerald-800"}`}>{message}</p>}
