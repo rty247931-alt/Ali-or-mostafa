@@ -16,7 +16,7 @@ export const orderInputSchema = z.object({
   couponCode: z.string().max(40).optional().nullable(),
   paymentMethod: z.enum(["COD", "ONLINE", "WALLET"]),
   walletProvider: z.enum(["vodafone", "orange", "etisalat"]).optional(),
-  paymentReceiptUrl: z.string().url().max(1000).optional(),
+  paymentReceiptUrl: z.string().max(1000).refine((v) => /^https:\/\//.test(v) || /^\/uploads\/payment-receipts\//.test(v), "رابط إيصال غير صحيح").optional(),
   customer: z.object({
     name: z.string().trim().min(3, "اكتب الاسم الأول والأخير").max(100),
     phone: z.string().transform(normalizeDigits).pipe(z.string().regex(EG_PHONE, "رقم موبايل مصري غير صحيح")),
