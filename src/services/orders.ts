@@ -14,7 +14,9 @@ export const orderInputSchema = z.object({
   idempotencyKey: z.string().min(16).max(100),
   items: z.array(lineSchema).min(1).max(30),
   couponCode: z.string().max(40).optional().nullable(),
-  paymentMethod: z.enum(["COD", "ONLINE"]),
+  paymentMethod: z.enum(["COD", "ONLINE", "WALLET"]),
+  walletProvider: z.enum(["vodafone", "orange", "etisalat"]).optional(),
+  paymentReceiptUrl: z.string().max(1000).refine((v) => /^https:\/\//.test(v) || /^\/uploads\/payment-receipts\//.test(v), "رابط إيصال غير صحيح").optional(),
   customer: z.object({
     name: z.string().trim().min(3, "اكتب الاسم الأول والأخير").max(100),
     phone: z.string().transform(normalizeDigits).pipe(z.string().regex(EG_PHONE, "رقم موبايل مصري غير صحيح")),
@@ -40,6 +42,12 @@ const newNumber = () => {
 export async function createOrder(input: OrderInput, userId: string | null) {
   if (input.paymentMethod === "ONLINE" && !(await getSetting("payments.online.enabled", false)))
     throw new ApiError(400, "الدفع الإلكتروني غير مفعل حاليًا، اختر الدفع عند الاستلام");
+  if (input.paymentMethod === "WALLET") {
+    if (!(await getSetting("payments.wallet.enabled", false))) throw new ApiError(400, "الدفع بالمحفظة الإلكترونية غير مفعل حاليًا");
+    if (!input.walletProvider || !input.paymentReceiptUrl) throw new ApiError(400, "اختر المحفظة وارفق صورة إيصال التحويل");
+    const key = input.walletProvider === "vodafone" ? "payments.wallet.vodafone" : input.walletProvider === "orange" ? "payments.wallet.orange" : "payments.wallet.etisalat";
+    if (!(await getSetting<string>(key, ""))) throw new ApiError(400, "المحفظة المختارة غير مجهزة من إدارة المتجر");
+  }
   if (!userId && !(await getSetting("checkout.guest.enabled", true)))
     throw new ApiError(401, "سجّل الدخول لإتمام الطلب");
 
@@ -86,6 +94,8 @@ export async function createOrder(input: OrderInput, userId: string | null) {
             grandTotal: fromCents(q.totalCents),
             couponCode: q.couponCode,
             paymentMethod: input.paymentMethod,
+            paymentReceiptUrl: input.paymentMethod === "WALLET" ? input.paymentReceiptUrl : null,
+            walletProvider: input.paymentMethod === "WALLET" ? input.walletProvider : null,
             status: "NEW",
             paymentStatus: input.paymentMethod === "COD" ? "UNPAID" : "PENDING",
             shippingStatus: "NOT_SHIPPED",
@@ -101,6 +111,7 @@ export async function createOrder(input: OrderInput, userId: string | null) {
             payments: {
               create: {
                 method: input.paymentMethod,
+                provider: input.paymentMethod === "WALLET" ? input.walletProvider : null,
                 status: input.paymentMethod === "COD" ? "UNPAID" : "PENDING",
                 amountDue: fromCents(q.totalCents),
               },

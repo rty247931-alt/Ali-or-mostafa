@@ -1,0 +1,3 @@
+ALTER TYPE "PaymentMethod" ADD VALUE IF NOT EXISTS 'WALLET';
+ALTER TABLE "Order" ADD COLUMN "paymentReceiptUrl" TEXT;
+ALTER TABLE "Order" ADD COLUMN "walletProvider" TEXT;

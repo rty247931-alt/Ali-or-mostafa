@@ -34,7 +34,7 @@ export default async function AdminOrders({ searchParams }: { searchParams: { q?
               <td>{staff.perms.has("customer.view") ? <>{o.customerName}<br /><small>{o.customerPhone}</small><br /><small>{o.shipGovernorate} — {o.shipCity} — {o.shipAddress}</small></> : "—"}
                 <br /><small>{o.items.map((i) => `${i.productName} ${i.colorName} م${i.sizeLabel}×${i.quantity}`).join("، ")}</small></td>
               <td>{Number(o.grandTotal).toLocaleString("ar-EG")} ج.م</td>
-              <td>{o.paymentMethod === "COD" ? "عند الاستلام" : "إلكتروني"}<br /><small>{PAYMENT_AR[o.paymentStatus]}</small></td>
+              <td>{o.paymentMethod === "COD" ? "عند الاستلام" : o.paymentMethod === "WALLET" ? `محفظة إلكترونية (${o.walletProvider === "vodafone" ? "فودافون كاش" : o.walletProvider === "orange" ? "أورنج كاش" : "اتصالات كاش"})` : "إلكتروني"}<br /><small>{PAYMENT_AR[o.paymentStatus]}</small>{o.paymentReceiptUrl && <><br /><a href={o.paymentReceiptUrl} target="_blank" rel="noopener noreferrer" style={{ color: "var(--ac)" }}>عرض إيصال التحويل</a></>}</td>
               <td>{STATUS_AR[o.status as OrderStatus]}</td>
               <td>{SHIPPING_AR[o.shippingStatus]}</td>
               <td>{canChange ? <OrderStatusSelect id={o.id} options={nextStatuses(o.status as OrderStatus).map((s) => ({ value: s, label: STATUS_AR[s] }))} /> : "—"}</td>
