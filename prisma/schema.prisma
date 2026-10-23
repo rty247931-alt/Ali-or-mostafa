@@ -46,6 +46,7 @@ enum ShippingStatus {
 enum PaymentMethod {
   COD
   ONLINE
+  WALLET
 }
 enum ProductStatus {
   DRAFT
@@ -378,6 +379,8 @@ model Order {
   paymentStatus  PaymentStatus  @default(UNPAID)
   shippingStatus ShippingStatus @default(NOT_SHIPPED)
   paymentMethod  PaymentMethod
+  paymentReceiptUrl String?
+  walletProvider String?
 
   inventoryDeducted Boolean @default(false) // guards against double deduct
   inventoryRestored Boolean @default(false) // guards against double restore
