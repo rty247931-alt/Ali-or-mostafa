@@ -11,7 +11,7 @@ const txt = (n: number) => z.string().trim().max(n);
 const settingsSchema = z.object({
   "store.name": txt(80).min(1), "store.description": txt(300),
   "theme.primary": hex, "theme.ink": hex,
-  "hero.title": txt(120), "hero.subtitle": txt(250), "hero.image": txt(500),
+  "hero.title": txt(120), "hero.subtitle": txt(250), "hero.image": txt(500), "store.logo": txt(500), "store.background": txt(500),
   announcement: z.object({ text: txt(200), url: txt(300).optional(), visible: z.boolean(), endsAt: z.string().nullable().optional() }),
   "contact.phone": txt(40), "contact.email": txt(120), "contact.address": txt(250),
   "social.facebook": txt(300), "social.instagram": txt(300), "social.whatsapp": txt(300), "social.tiktok": txt(300),
