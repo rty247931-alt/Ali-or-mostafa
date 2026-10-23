@@ -28,7 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     getSetting<{ text: string; url?: string; visible: boolean; endsAt?: string } | null>("announcement", null),
   ]);
   const [extra, session] = await Promise.all([
-    getSettings(["maintenance", "contact.phone", "contact.email", "contact.address", "social.facebook", "social.instagram", "social.whatsapp", "social.tiktok"]),
+    getSettings(["maintenance", "contact.phone", "contact.email", "contact.address", "social.facebook", "social.instagram", "social.whatsapp", "social.tiktok", "store.logo", "store.background"]),
     getSession(),
   ]);
   const path = headers().get("x-path") ?? "/";
@@ -47,7 +47,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {showAnn && <div className="ann">{ann!.url ? <Link href={ann!.url}>{ann!.text}</Link> : ann!.text}</div>}
         <header className="top">
           <div className="hb">
-            <Link href="/" className="logo">{name}<i>.</i></Link>
+            <Link href="/" className="logo">{typeof extra["store.logo"] === "string" && extra["store.logo"] ? <img src={String(extra["store.logo"])} alt={name} style={{ maxHeight: 48, maxWidth: 150, objectFit: "contain", verticalAlign: "middle" }} /> : <>{name}<i>.</i></>}</Link>
             <nav>
               <Link href="/shop">المتجر</Link>
               <Link href="/shop?discount=1">العروض</Link>
@@ -59,7 +59,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <CartCount />
           </div>
         </header>
-        <main>{maintenance ? <div className="maint"><div><h1>المتجر تحت الصيانة</h1><p>نعود قريبًا. شكرًا لصبرك.</p></div></div> : children}</main>
+        <main style={typeof extra["store.background"] === "string" && extra["store.background"] ? { backgroundImage: `linear-gradient(#ffffffd9,#ffffffd9),url(${JSON.stringify(String(extra["store.background"]))})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" } : undefined}>{maintenance ? <div className="maint"><div><h1>المتجر تحت الصيانة</h1><p>نعود قريبًا. شكرًا لصبرك.</p></div></div> : children}</main>
         <footer className="ft">
           <div className="w fg">
             <div><h4>{name}</h4><p>متجر أحذية رجالي وحريمي وأطفال.</p>
