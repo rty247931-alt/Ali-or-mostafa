@@ -107,6 +107,7 @@ model User {
   inventoryMoves  InventoryMovement[]
   statusChanges   OrderStatusHistory[]
   verificationTokens VerificationToken[]
+  loyaltyTransactions LoyaltyTransaction[]
 
   @@index([kind])
 }
@@ -555,6 +556,26 @@ model Favorite {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   @@id([userId, productId])
+}
+
+// ---------- Customer loyalty points ----------
+enum LoyaltyTransactionType {
+  EARN
+  REDEEM
+  ADJUSTMENT
+  REVERSAL
+}
+
+model LoyaltyTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId     String?  @unique
+  type        LoyaltyTransactionType
+  points      Int      // signed: earned positive, redeemed/reversed negative
+  description String
+  createdAt   DateTime @default(now())
+  @@index([userId, createdAt])
 }
 
 // ---------- Content & settings ----------
