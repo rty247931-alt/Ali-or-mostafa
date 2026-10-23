@@ -13,9 +13,8 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
-      # Build-time placeholder only; CI must never connect to production data.
       DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci?schema=public
       AUTH_SECRET: ci-only-secret-not-for-production
       NEXT_TELEMETRY_DISABLED: "1"
@@ -26,10 +25,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-      - name: Install dependencies
-        # The existing lockfile is out of sync with package.json; npm install resolves it in CI.
-        run: npm install
+      - name: Regenerate lockfile from declared dependencies
+        # Temporary compatibility measure: the committed lockfile is stale.
+        # This does not replace committing a regenerated package-lock.json.
+        run: npm install --package-lock-only --ignore-scripts
+      - name: Install dependencies from lockfile
+        run: npm ci
       - name: Generate Prisma client
         run: npx prisma generate
       - name: Type check
