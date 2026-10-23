@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 type V = Record<string, any>;
 type Item = { key: string; label: string; type: "text" | "number" | "bool" | "color"; hint?: string };
 const GROUPS: { title: string; items: Item[] }[] = [
-  { title: "المتجر", items: [{ key: "store.name", label: "اسم المتجر", type: "text" }, { key: "store.description", label: "وصف المتجر", type: "text" }] },
+  { title: "المتجر", items: [{ key: "store.name", label: "اسم المتجر", type: "text" }, { key: "store.description", label: "وصف المتجر", type: "text" }, { key: "store.logo", label: "شعار المتجر", type: "text" }, { key: "store.background", label: "خلفية المتجر", type: "text" }] },
   { title: "الهوية (الألوان)", items: [{ key: "theme.primary", label: "اللون الأساسي", type: "color" }, { key: "theme.ink", label: "لون النص على اللون الأساسي", type: "color" }] },
-  { title: "الواجهة الرئيسية", items: [{ key: "hero.title", label: "عنوان الواجهة", type: "text" }, { key: "hero.subtitle", label: "الوصف", type: "text" }, { key: "hero.image", label: "رابط صورة الواجهة (اختياري)", type: "text" }] },
+  { title: "الواجهة الرئيسية", items: [{ key: "hero.title", label: "عنوان الواجهة", type: "text" }, { key: "hero.subtitle", label: "الوصف", type: "text" }, { key: "hero.image", label: "صورة الواجهة", type: "text" }] },
   { title: "التواصل", items: [{ key: "contact.phone", label: "الهاتف", type: "text" }, { key: "contact.email", label: "البريد", type: "text" }, { key: "contact.address", label: "العنوان", type: "text" }] },
   { title: "روابط التواصل الاجتماعي", items: [{ key: "social.facebook", label: "فيسبوك", type: "text" }, { key: "social.instagram", label: "إنستجرام", type: "text" }, { key: "social.whatsapp", label: "واتساب", type: "text" }, { key: "social.tiktok", label: "تيك توك", type: "text" }] },
   { title: "الشحن", items: [{ key: "shipping.trackingUrl", label: "قالب رابط تتبع الشحنة", type: "text", hint: "مثال: https://موقع-شركة-الشحن/track/{tracking}  (يحل مكان {tracking} رقم التتبع). اتركه فارغًا إن لم يوجد" }] },
@@ -53,7 +53,8 @@ export default function SettingsForm({ values, paymobConfigured, paymentsVerifie
             <div key={it.key}>
               {it.type === "bool" ? <label className="lbl"><input type="checkbox" checked={!!def(it)} onChange={(e) => setV({ ...v, [it.key]: e.target.checked })} /> {it.label}</label> : (
                 <><label className="lbl" htmlFor={it.key}>{it.label}</label>
-                  <input id={it.key} className="in" type={it.type === "color" ? "color" : it.type === "number" ? "number" : "text"} value={def(it)} onChange={(e) => setV({ ...v, [it.key]: e.target.value })} style={it.type === "color" ? { height: 42, padding: 2 } : undefined} /></>
+                  <input id={it.key} className="in" type={it.type === "color" ? "color" : it.type === "number" ? "number" : "text"} value={def(it)} onChange={(e) => setV({ ...v, [it.key]: e.target.value })} style={it.type === "color" ? { height: 42, padding: 2 } : undefined} />
+                  {["store.logo", "store.background", "hero.image"].includes(it.key) && <p style={{ fontSize: 12 }}>يمكن رفع صورة من الجهاز هنا، ثم حفظ الإعدادات.</p>}</>
               )}
               {it.hint && <div style={{ fontSize: 12, color: "var(--mu)" }}>{it.hint}</div>}
             </div>
