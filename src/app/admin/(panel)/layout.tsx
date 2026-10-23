@@ -27,6 +27,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         {has("customer.view") && <Link href="/admin/manage/messages">الرسائل</Link>}
         {has("order.view") && <Link href="/admin/notifications">الإشعارات</Link>}
         {has("user.manage") && <Link href="/admin/users">المستخدمون</Link>}
+        {has("settings.update") && <Link href="/admin/updates">التحديثات</Link>}
         <Link href="/">المتجر</Link>
       </div>
       {children}

@@ -200,6 +200,18 @@ export async function changeOrderStatus(orderId: string, to: OrderStatus, actorI
       await tx.couponUsage.deleteMany({ where: { orderId: o.id } });
     }
 
+    // Award points once, only to registered customers, after delivery. One point per 10 EGP.
+    // Unique orderId plus the order row lock prevents duplicate rewards.
+    if (to === "DELIVERED" && o.customerId) {
+      const existingReward = await tx.loyaltyTransaction.findUnique({ where: { orderId: o.id } });
+      const points = Math.floor(Number(o.grandTotal) / 10);
+      if (!existingReward && points > 0) {
+        await tx.loyaltyTransaction.create({
+          data: { userId: o.customerId, orderId: o.id, type: "EARN", points, description: `نقاط مقابل الطلب ${o.number}` },
+        });
+      }
+    }
+
     if (to === "DELIVERED" && o.paymentMethod === "COD" && o.paymentStatus !== "PAID") {
       data.paymentStatus = "PAID";
       history.push({ field: "paymentStatus", fromValue: o.paymentStatus, toValue: "PAID", note: "تحصيل عند الاستلام" });
