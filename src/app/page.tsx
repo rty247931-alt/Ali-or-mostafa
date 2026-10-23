@@ -51,7 +51,7 @@ export default async function Home() {
           <Link className="btn o" href="/shop?isNew=1">اكتشف المجموعة الجديدة</Link>
         </div>
       </div>
-      <Section title="الأقسام"><div className="cats">{categories.map((c) => <Link key={c.id} className="ct" href={`/shop?category=${c.slug}`}>{c.name}</Link>)}</div></Section>
+      <Section title="الأقسام"><div className="cats">{categories.map((c) => <Link key={c.id} className="ct" href={`/shop?category=${c.slug}`}>{c.imageUrl ? <img className="ctimg" src={c.imageUrl} alt="" loading="lazy" /> : <span className="ctplaceholder" aria-hidden="true">✦</span>}<span>{c.name}</span></Link>)}</div></Section>
       {banners.length > 0 && <Section title="عروض وإعلانات"><div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))" }}>{banners.map((b) => (
         <a key={b.id} className="bn" href={b.buttonUrl || "#"}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src={b.imageUrl} alt={b.title ?? ""} loading="lazy" />
           {(b.title || b.subtitle) && <div className="t"><b>{b.title}</b><div>{b.subtitle}</div>{b.buttonText && <span className="tg">{b.buttonText}</span>}</div>}</a>

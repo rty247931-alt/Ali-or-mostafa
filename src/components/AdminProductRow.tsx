@@ -12,22 +12,6 @@ export type AdminP = {
 };
 type Perms = { price: boolean; update: boolean; stock: boolean };
 
-/** Shrinks phone photos in the browser (max 1600px, JPEG 85%) so uploads are small and fast and pass hosting size limits. */
-async function shrink(file: File): Promise<File> {
-  try {
-    const bmp = await createImageBitmap(file);
-    const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
-    const w = Math.round(bmp.width * scale), h = Math.round(bmp.height * scale);
-    const c = document.createElement("canvas");
-    c.width = w; c.height = h;
-    c.getContext("2d")!.drawImage(bmp, 0, 0, w, h);
-    const blob: Blob | null = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.85));
-    return blob ? new File([blob], "photo.jpg", { type: "image/jpeg" }) : file;
-  } catch {
-    return file;
-  }
-}
-
 async function call(url: string, method: string, body?: unknown) {
   const r = await fetch(url, { method, headers: body instanceof FormData ? undefined : { "Content-Type": "application/json" }, body: body instanceof FormData ? body : body ? JSON.stringify(body) : undefined });
   const d = await r.json().catch(() => ({}));
@@ -104,7 +88,7 @@ export default function AdminProductRow({ p, perms, categories, brands, selected
             for (const f of files) {
               setUpl(`جاري رفع الصورة ${done + 1} من ${files.length}…`);
               try {
-                const fd = new FormData(); fd.append("file", await shrink(f)); fd.append("colorName", imgColor);
+                const fd = new FormData(); fd.append("file", f); fd.append("colorName", imgColor);
                 await call(`/api/admin/products/${p.id}/images`, "POST", fd); done++;
               } catch (err) { setMsg({ t: `توقف الرفع عند الصورة ${done + 1}: ${err instanceof Error ? err.message : "فشل"}`, ok: false }); setUpl(""); router.refresh(); return; }
             }
