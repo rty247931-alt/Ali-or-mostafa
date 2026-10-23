@@ -25,6 +25,47 @@ export default function SettingsForm({ values, paymobConfigured, paymentsVerifie
   const [busy, setBusy] = useState(false);
   const def = (it: Item) => v[it.key] ?? (it.type === "bool" ? (it.key === "checkout.guest.enabled") : it.type === "number" ? 0 : it.type === "color" ? "#000000" : "");
 
+
+  async function uploadSettingImage(key: string, file?: File) {
+    if (!file) return;
+    setBusy(true); setMsg(null);
+    try {
+      const fd = new FormData();
+      fd.set("file", file);
+      fd.set("entity", "settings");
+      const r = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.error ?? "تعذر رفع الصورة");
+      setV((old) => ({ ...old, [key]: d.url }));
+      setMsg({ t: "تم رفع الصورة. اضغط حفظ الإعدادات لتثبيتها.", ok: true });
+    } catch (e) {
+      setMsg({ t: e instanceof Error ? e.message : "تعذر رفع الصورة", ok: false });
+    } finally { setBusy(false); }
+  }
+  const [profile, setProfile] = useState({ fullName: "", email: "", currentPassword: "", newPassword: "" });
+  const [profileLoaded, setProfileLoaded] = useState(false);
+  async function loadProfile() {
+    if (profileLoaded) return;
+    const r = await fetch("/api/admin/profile");
+    const d = await r.json().catch(() => ({}));
+    if (r.ok) setProfile((p) => ({ ...p, fullName: d.fullName ?? "", email: d.email ?? "" }));
+    setProfileLoaded(true);
+  }
+  async function saveProfile() {
+    setBusy(true); setMsg(null);
+    try {
+      const r = await fetch("/api/admin/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profile),
+      });
+      const d = await r.json().catch(() => ({}));
+      setMsg({ t: r.ok ? "تم تحديث بيانات المدير" : d.error ?? "تعذر حفظ بيانات المدير", ok: r.ok });
+      if (r.ok) setProfile((p) => ({ ...p, currentPassword: "", newPassword: "" }));
+    } catch { setMsg({ t: "فشل الاتصال", ok: false }); }
+    finally { setBusy(false); }
+  }
+
   async function patch(body: unknown, ok: string) {
     setBusy(true); setMsg(null);
     const r = await fetch("/api/admin/settings", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
@@ -54,6 +95,13 @@ export default function SettingsForm({ values, paymobConfigured, paymentsVerifie
               {it.type === "bool" ? <label className="lbl"><input type="checkbox" checked={!!def(it)} onChange={(e) => setV({ ...v, [it.key]: e.target.checked })} /> {it.label}</label> : (
                 <><label className="lbl" htmlFor={it.key}>{it.label}</label>
                   <input id={it.key} className="in" type={it.type === "color" ? "color" : it.type === "number" ? "number" : "text"} value={def(it)} onChange={(e) => setV({ ...v, [it.key]: e.target.value })} style={it.type === "color" ? { height: 42, padding: 2 } : undefined} />
+                  {["store.logo", "store.background", "hero.image"].includes(it.key) && <div style={{ marginTop: 8 }}>
+                    <label className="btn o sm" style={{ display: "inline-block" }}>
+                      إضافة صورة من الجهاز
+                      <input type="file" accept="image/*" hidden disabled={busy} onChange={(e) => { void uploadSettingImage(it.key, e.target.files?.[0]); e.currentTarget.value = ""; }} />
+                    </label>
+                    {typeof def(it) === "string" && def(it) && <div style={{ marginTop: 8 }}><img src={String(def(it))} alt="معاينة الصورة" style={{ maxWidth: 200, maxHeight: 120, objectFit: "contain", borderRadius: 8 }} /></div>}
+                  </div>}
                   {["store.logo", "store.background", "hero.image"].includes(it.key) && <p style={{ fontSize: 12 }}>يمكن رفع صورة من الجهاز هنا، ثم حفظ الإعدادات.</p>}</>
               )}
               {it.hint && <div style={{ fontSize: 12, color: "var(--mu)" }}>{it.hint}</div>}
@@ -69,6 +117,19 @@ export default function SettingsForm({ values, paymobConfigured, paymentsVerifie
         <label className="lbl"><input type="checkbox" checked={a.visible} onChange={(e) => setA({ ...a, visible: e.target.checked })} /> إظهار الشريط</label>
       </div>
       <button className="btn" disabled={busy} onClick={save}>حفظ الإعدادات</button>
+      <div className="box" style={{ margin: "14px 0" }}>
+        <h3 style={{ margin: 0 }}>بيانات المدير وتسجيل الدخول</h3>
+        <p style={{ color: "var(--mu)" }}>تغيير كلمة المرور يتطلب إدخال كلمة المرور الحالية، والجديدة لا تقل عن ١٢ حرفًا.</p>
+        <label className="lbl" htmlFor="admin-full-name">اسم المدير</label>
+        <input id="admin-full-name" className="in" value={profile.fullName} onFocus={() => { void loadProfile(); }} onChange={(e) => setProfile({ ...profile, fullName: e.target.value })} />
+        <label className="lbl" htmlFor="admin-email">بريد المدير</label>
+        <input id="admin-email" className="in" type="email" value={profile.email} onFocus={() => { void loadProfile(); }} onChange={(e) => setProfile({ ...profile, email: e.target.value })} />
+        <label className="lbl" htmlFor="admin-current-password">كلمة المرور الحالية</label>
+        <input id="admin-current-password" className="in" type="password" autoComplete="current-password" value={profile.currentPassword} onChange={(e) => setProfile({ ...profile, currentPassword: e.target.value })} />
+        <label className="lbl" htmlFor="admin-new-password">كلمة المرور الجديدة</label>
+        <input id="admin-new-password" className="in" type="password" autoComplete="new-password" value={profile.newPassword} onChange={(e) => setProfile({ ...profile, newPassword: e.target.value })} />
+        <button className="btn o sm" style={{ marginTop: 10 }} disabled={busy} onClick={saveProfile}>حفظ بيانات المدير</button>
+      </div>
       <div className="box" style={{ margin: "14px 0" }}>
         <h3 style={{ margin: 0 }}>الدفع الإلكتروني</h3>
         <p style={{ color: "var(--mu)" }}>الحالة: {!paymobConfigured ? "غير مضبوط (أضف متغيرات PAYMOB_* في بيئة التشغيل)" : paymentsVerified ? "مضبوط ونجح اختباره" : "مضبوط ولم يُختبر بعد"}</p>
