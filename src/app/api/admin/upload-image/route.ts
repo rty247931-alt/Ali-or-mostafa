@@ -3,6 +3,7 @@ import { requirePerm } from "@/lib/perm";
 import { saveImage } from "@/lib/storage";
 
 const FOLDERS = {
+  settings: { folder: "settings", perm: "settings.update" },
   categories: { folder: "categories", perm: "product.update" },
   brands: { folder: "brands", perm: "product.update" },
   banners: { folder: "banners", perm: "settings.update" },
