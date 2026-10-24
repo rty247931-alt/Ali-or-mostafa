@@ -1,5 +1,5 @@
 :root{--bg:#F4F1EA;--sf:#fff;--tx:#0E0E10;--mu:#5E5B55;--ac:#FF4A1C;--acx:#0E0E10;--ln:#DDD8CC;--im:#FFE3D6;--er:#C0392B;--ok:#1E8E5A}
-@media (prefers-color-scheme:dark){:root{--bg:#131314;--sf:#1D1D20;--tx:#F2EEE4;--mu:#A09B90;--ln:#2E2E32;--im:#26262A}}
+@media (prefers-color-scheme:dark){html:not(.light-mode){--bg:#131314;--sf:#1D1D20;--tx:#F2EEE4;--mu:#A09B90;--ln:#2E2E32;--im:#26262A}}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--tx);font:500 15px/1.7 Cairo,Tahoma,Arial,sans-serif}
 h1,h2,h3,h4,.logo,.btn,.price b{font-family:Changa,Cairo,Tahoma,sans-serif;font-weight:800}
