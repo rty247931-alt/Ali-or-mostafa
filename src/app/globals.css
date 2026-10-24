@@ -61,3 +61,46 @@ html.dark-mode header.top,html.dark-mode footer.ft{background:#090a0b;color:#f3f
 html.dark-mode .in,html.dark-mode .o,html.dark-mode .ct,html.dark-mode .cd,html.dark-mode .box,html.dark-mode .kp>div,html.dark-mode .brs a{background:var(--sf);color:var(--tx)}
 html.dark-mode .btn{border-color:var(--tx)}
 html.dark-mode .hero{background-color:var(--ac);color:var(--acx)}
+
+
+/* Storefront presets: each preset changes layout rhythm, not just palette. */
+.store-announcement{overflow:hidden;white-space:nowrap;background:var(--ac);color:var(--acx);font-weight:800;padding:7px 0;border-bottom:2px solid var(--tx)}
+.store-announcement-track{display:flex;width:max-content;min-width:200%;animation:store-marquee 24s linear infinite}
+.store-announcement-track span{padding-inline:28px}
+.store-announcement-track b{padding-inline-start:22px}
+.store-announcement:hover .store-announcement-track{animation-play-state:paused}
+@keyframes store-marquee{from{transform:translateX(0)}to{transform:translateX(50%)}}
+.storefront-minimal .hero{background:var(--sf);color:var(--tx);border:0}
+.storefront-minimal .hero .w{padding-top:34px;padding-bottom:36px}
+.storefront-minimal .hero h1{font-size:clamp(32px,6vw,58px);font-weight:600}
+.storefront-minimal .hero .btn{background:var(--tx);color:var(--sf);border:0;border-radius:8px}
+.storefront-minimal .sh2 h2{border:0;font-size:24px;font-weight:600}
+.storefront-minimal .cd,.storefront-minimal .ct{border:1px solid var(--ln);box-shadow:none;border-radius:8px}
+.storefront-minimal .grid{gap:14px}
+.storefront-bold .hero{background:var(--tx);color:var(--sf);border-bottom:10px solid var(--ac)}
+.storefront-bold .hero h1{font-size:clamp(44px,11vw,96px);text-transform:uppercase;letter-spacing:-.04em}
+.storefront-bold .hero .btn{background:var(--ac);color:var(--acx);border:2px solid var(--sf);box-shadow:5px 5px 0 var(--ac)}
+.storefront-bold .cd,.storefront-bold .ct{border-radius:2px;border-width:3px;box-shadow:6px 6px 0 var(--ac)}
+.storefront-bold .sh2 h2{border:0;background:var(--tx);color:var(--sf);padding:6px 12px}
+.storefront-warm .hero{background:linear-gradient(120deg,var(--ac),color-mix(in srgb,var(--ac) 35%,var(--bg)));border:0;border-radius:0 0 36px 36px}
+.storefront-warm .cd,.storefront-warm .ct{border:1px solid var(--ln);border-radius:24px;box-shadow:0 8px 24px #49382d14}
+.storefront-warm .im{border:0;border-radius:20px}
+.storefront-warm .sh2 h2{border:0}
+.storefront-luxury .hero{background:var(--tx);color:var(--sf);border-bottom:1px solid var(--ac);text-align:center}
+.storefront-luxury .hero .w{padding-top:68px;padding-bottom:70px}
+.storefront-luxury .hero h1{font-family:Georgia,serif;font-weight:500;letter-spacing:.02em}
+.storefront-luxury .hero .btn{border:1px solid var(--ac);border-radius:0;background:transparent;color:var(--sf)}
+.storefront-luxury .cd,.storefront-luxury .ct{border:1px solid var(--ac);border-radius:0;box-shadow:none}
+.storefront-luxury .sh2{justify-content:center}
+.storefront-luxury .sh2 h2{border:0;font-family:Georgia,serif;font-weight:500;letter-spacing:.04em}
+.storefront-sport .hero{background:var(--ac);clip-path:polygon(0 0,100% 0,100% 88%,0 100%);border:0}
+.storefront-sport .hero h1{font-style:italic;font-weight:900;transform:skewX(-3deg)}
+.storefront-sport .cd{border-radius:8px;box-shadow:3px 3px 0 var(--tx)}
+.storefront-sport .tg{border-radius:2px;transform:skewX(-10deg)}
+.storefront-sport .sh2 h2{border-bottom:4px solid var(--ac);font-style:italic;text-transform:uppercase}
+.storefront-fresh .hero{background:linear-gradient(135deg,var(--im),var(--bg));color:var(--tx);border:0;border-radius:0 0 48px 48px}
+.storefront-fresh .hero .btn{border:0;border-radius:14px;box-shadow:none}
+.storefront-fresh .cd,.storefront-fresh .ct{border:0;border-radius:24px;box-shadow:0 8px 24px #17324d12}
+.storefront-fresh .im{border:0;border-radius:20px 20px 0 0}
+.storefront-fresh .sh2 h2{border:0}
+@media(prefers-reduced-motion:reduce){.store-announcement-track{animation:none;justify-content:center;min-width:100%;width:100%;flex-wrap:wrap}.store-announcement-track span:nth-child(n+2){display:none}}
