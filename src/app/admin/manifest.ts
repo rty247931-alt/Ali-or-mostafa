@@ -14,6 +14,6 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     background_color: "#f8f7f4",
     theme_color: "#ff4a1c",
-    icons: [{ src: "/khotwa-admin.svg", sizes: "any", type: "image/svg+xml", purpose: "any maskable" }],
+    icons: [{ src: "/khotwa-admin.svg", sizes: "any", type: "image/svg+xml", purpose: "any" }],
   };
 }
