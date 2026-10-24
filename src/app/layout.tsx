@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import CartCount from "@/components/CartCount";
 import ThemeModeToggle from "@/components/ThemeModeToggle";
+import BackButton from "@/components/BackButton";
 import { headers } from "next/headers";
 import { getSession } from "@/lib/session";
 import { getSetting, getSettings } from "@/lib/settings";
@@ -61,6 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <form action="/shop"><input type="search" name="q" placeholder="ابحث عن حذاء" aria-label="بحث" /></form>
             <Link href="/account" className="ic" aria-label="حسابي">حسابي</Link>
             <CartCount />
+            <BackButton />
             <ThemeModeToggle />
           </div>
         </header>
