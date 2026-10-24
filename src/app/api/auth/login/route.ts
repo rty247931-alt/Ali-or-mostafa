@@ -21,7 +21,7 @@ export const POST = route(async (req) => {
     await fakeVerify(password);
     throw new ApiError(401, BAD);
   }
-  if (user.kind === "STAFF") throw new ApiError(403, "حساب الإدارة يسجّل الدخول من بوابة الإدارة فقط");
+  if (user.kind === "STAFF") { await fakeVerify(password); throw new ApiError(401, BAD); }
   if (user.lockedUntil && user.lockedUntil > new Date())
     throw new ApiError(429, "تم إيقاف المحاولات مؤقتًا، جرّب بعد قليل");
 
