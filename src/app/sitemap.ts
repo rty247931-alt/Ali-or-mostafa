@@ -3,8 +3,14 @@ import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
+function getSiteUrl() {
+  const configured = process.env.SITE_URL?.trim();
+  const host = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+  return configured || (host ? `https://${host}` : "http://localhost:3000");
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const site = process.env.SITE_URL ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+  const site = getSiteUrl();
   const [products, cats, pages] = await Promise.all([
     db.product.findMany({ where: { status: "ACTIVE" }, select: { slug: true, updatedAt: true } }),
     db.category.findMany({ where: { isVisible: true }, select: { slug: true } }),
