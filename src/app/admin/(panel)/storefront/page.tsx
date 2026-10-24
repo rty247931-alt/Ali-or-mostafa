@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const designs = [
- {id:"classic",name:"المتجر الكلاسيكي",desc:"متجر متوازن: بانر واضح، أقسام مرتبة، وشبكة منتجات تقليدية",colors:["#F4F1EA","#FF4A1C","#0E0E10"],layout:"grid"},
- {id:"minimal",name:"متجر مينيمال",desc:"مساحات واسعة، خطوط هادئة، بطاقات بسيطة ومنتجات أكبر",colors:["#FFFFFF","#222222","#777777"],layout:"minimal"},
- {id:"bold",name:"متجر جريء",desc:"واجهة قوية، عنوان ضخم، كروت حادة وتباين واضح",colors:["#FFF4EF","#E11D48","#191919"],layout:"bold"},
- {id:"warm",name:"متجر دافئ",desc:"زوايا ناعمة، مساحات مريحة وبطاقات مستديرة",colors:["#F7EFE3","#B65F35","#49382D"],layout:"warm"},
- {id:"luxury",name:"متجر فاخر",desc:"عرض أنيق، محاذاة وسطية، تفاصيل ذهبية وشكل راقٍ",colors:["#171717","#D4AF37","#F5F0E5"],layout:"luxury"},
- {id:"sport",name:"متجر رياضي",desc:"ستايل سريع، عناوين مائلة، شارات حادة وإيقاع نشيط",colors:["#F0F7F4","#087F5B","#102A43"],layout:"sport"},
- {id:"fresh",name:"متجر منعش",desc:"ستايل خفيف، منحنيات كبيرة وبطاقات ناعمة",colors:["#F1F8FF","#3987D7","#17324D"],layout:"fresh"},
+ {id:"classic",name:"1 — خُطوة الأصلي",desc:"النسخة الأصلية: شريط برتقالي، أقسام واضحة وبطاقات بإطار قوي",colors:["#F4F1EA","#FF4A1C","#0E0E10"],layout:"grid"},
+ {id:"minimal",name:"2 — EVERLINE / إيديتوريال",desc:"واجهة أحذية تحريرية: عنوان هادئ، صور أكبر، فراغات وشبكة خفيفة",colors:["#FFFFFF","#222222","#777777"],layout:"minimal"},
+ {id:"bold",name:"3 — ستريت وير جريء",desc:"تايبوجرافي ضخم، كتل لونية، حدود حادة وشبكة منتجات قوية",colors:["#FFF4EF","#E11D48","#191919"],layout:"bold"},
+ {id:"warm",name:"4 — Kick Avenue ستريت",desc:"واجهة سوق أحذية شبابية، صفوف أفقية، شارات وإبراز المنتجات",colors:["#F7EFE3","#B65F35","#49382D"],layout:"warm"},
+ {id:"luxury",name:"5 — Luxury Editorial",desc:"ستايل فاخر داكن، لمسات ذهبية، محاذاة أنيقة وتفاصيل راقية",colors:["#171717","#D4AF37","#F5F0E5"],layout:"luxury"},
+ {id:"sport",name:"6 — Viren Performance",desc:"هوية رياضية مائلة، عناوين حركية وتباين أخضر مستوحى من الأداء",colors:["#F0F7F4","#087F5B","#102A43"],layout:"sport"},
+ {id:"fresh",name:"7 — Zalando Fresh",desc:"تجربة تسوق عصرية فاتحة، بطاقات ناعمة وأقسام سهلة الاستكشاف",colors:["#F1F8FF","#3987D7","#17324D"],layout:"fresh"},
 ] as const;
 
 export default function StorefrontDesignPage(){
@@ -32,7 +32,7 @@ export default function StorefrontDesignPage(){
   const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||d.message||"لم يتم الحفظ");setMessage(restoreDefaults ? "تمت استعادة إعدادات المتجر الأولية." : "اتحفظ القالب وإعدادات الشريط والنص الإضافي.");
  }catch(e){setMessage(e instanceof Error?e.message:"تعذر الحفظ")}finally{setSaving(false)}}
  return <main dir="rtl" className="pg">
-  <div className="mb-5 flex items-center justify-between gap-3"><div><h1 className="text-2xl font-bold">قوالب المتجر السبعة</h1><p className="text-sm" style={{color:"var(--mu)"}}>دي ٧ أشكال متاجر مختلفة في التنسيق، مش مجرد تغيير ألوان.</p></div><Link href="/admin" className="rounded-xl border px-4 py-2 text-sm font-semibold">رجوع للإدارة</Link></div>
+  <div className="mb-5 flex items-center justify-between gap-3"><div><h1 className="text-2xl font-bold">قوالب المتجر السبعة</h1><p className="text-sm" style={{color:"var(--mu)"}}>اختار اتجاه التصميم؛ كل اختيار يغيّر شكل الهيدر والواجهة الرئيسية والأقسام وشبكة المنتجات وبطاقات المنتجات في المتجر.</p></div><Link href="/admin" className="rounded-xl border px-4 py-2 text-sm font-semibold">رجوع للإدارة</Link></div>
   {loading?<div className="box">جارٍ تحميل الإعدادات…</div>:<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
    {designs.map(d=><button key={d.id} type="button" onClick={()=>{setSelected(d.id);setRestoreDefaults(false)}} aria-pressed={selected===d.id} className="box text-right transition" style={{border:selected===d.id?"3px solid var(--ac)":"2px solid var(--ln)"}}>
     <div className={`storefront storefront-${d.id} overflow-hidden rounded-xl border`} style={{background:d.colors[0],color:d.colors[2],borderColor:d.colors[2]}}>
@@ -43,7 +43,7 @@ export default function StorefrontDesignPage(){
     <div className="mt-3 flex items-center justify-between gap-2"><div><h2 className="font-bold">{d.name}</h2><p className="text-sm" style={{color:"var(--mu)"}}>{d.desc}</p></div><span className="rounded-full border px-3 py-1 text-xs">{selected===d.id?"✓ مختار":"اختيار"}</span></div>
    </button>)}
   </div>}
-  <button type="button" onClick={()=>{setRestoreDefaults(true);setSelected("classic");setMarquee(false);setMarqueeText("");setHiddenText("");setMessage("سيتم الرجوع لإعدادات المتجر الأولية عند الحفظ.")}} className="box mt-5 w-full text-right transition" style={{border:restoreDefaults?"3px solid var(--ac)":"2px solid var(--ln)"}}><strong>↩ الرجوع لإعدادات المتجر الأولية</strong><p className="text-sm" style={{color:"var(--mu)"}}>استعادة القالب الأساسي وإيقاف شريط الإعلان ومسح إعداداته الإضافية بعد الضغط على حفظ.</p></button>
+  <button type="button" onClick={()=>{setRestoreDefaults(true);setSelected("classic");setMarquee(false);setMarqueeText("");setHiddenText("");setMessage("سيتم 8 — الرجوع للمتجر الأصلي عند الحفظ.")}} className="box mt-5 w-full text-right transition" style={{border:restoreDefaults?"3px solid var(--ac)":"2px solid var(--ln)"}}><strong>↩ الرجوع لإعدادات المتجر الأولية</strong><p className="text-sm" style={{color:"var(--mu)"}}>يرجع لتصميم خُطوة الأصلي ويوقف شريط الإعلان ويمسح النص الإضافي عند الحفظ.</p></button>
   <section className="box mt-5 space-y-4"><h2 className="text-lg font-bold">حركة ومحتوى المتجر</h2>
    <label className="flex items-center gap-2"><input type="checkbox" checked={marquee} onChange={e=>{setMarquee(e.target.checked);setRestoreDefaults(false)}}/> تشغيل شريط الإعلانات المتحرك</label>
    <label className="block text-sm font-semibold">نص الشريط المتحرك<input className="mt-1 w-full rounded-xl border bg-transparent p-3" value={marqueeText} maxLength={200} onChange={e=>{setMarqueeText(e.target.value);setRestoreDefaults(false)}}/></label>
