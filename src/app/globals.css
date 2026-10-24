@@ -112,3 +112,62 @@ html.dark-mode .hero{background-color:var(--ac);color:var(--acx)}
 .storefront-luxury{--bg:#171717;--sf:#222;--tx:#F5F0E5;--mu:#bdb4a0;--ac:#D4AF37;--acx:#171717;--ln:#66572d;--im:#302b20}
 .storefront-sport{--bg:#F0F7F4;--sf:#fff;--tx:#102A43;--mu:#486174;--ac:#087F5B;--acx:#fff;--ln:#bfd8cd;--im:#d7eee4}
 .storefront-fresh{--bg:#F1F8FF;--sf:#fff;--tx:#17324D;--mu:#5e768d;--ac:#3987D7;--acx:#fff;--ln:#cde4f8;--im:#dfefff}
+
+
+/* Seven deliberately distinct storefront art directions — shared across storefront routes. */
+.storefront{transition:background-color .35s,color .35s}
+.storefront .hero,.storefront .cd,.storefront .ct,.storefront .bn,.storefront .box{transition:border-radius .3s,box-shadow .3s,transform .3s}
+.storefront-minimal .hero{background-image:linear-gradient(90deg,#fff 0%,#fff 52%,#f1f1ef 100%);position:relative}
+.storefront-minimal .hero .w{max-width:1360px;padding-top:clamp(56px,9vw,120px);padding-bottom:clamp(56px,9vw,120px)}
+.storefront-minimal .hero p{font-weight:400;color:#666}
+.storefront-minimal .hero .btn{border-radius:2px;padding:13px 28px}
+.storefront-minimal .cats{gap:18px}
+.storefront-minimal .ct{padding:18px 8px;font-weight:500}
+.storefront-minimal .im{background:#f6f6f4;border:0}
+.storefront-minimal .ci h3{font-weight:500}
+.storefront-bold .hero{position:relative;isolation:isolate}
+.storefront-bold .hero:after{content:"NEW / NOW / NEXT";display:block;font:900 clamp(24px,6vw,74px)/1 Impact, sans-serif;letter-spacing:.06em;color:var(--ac);opacity:.9;padding:8px 14px 0;max-width:1200px;margin:auto}
+.storefront-bold section.s{padding-top:52px}
+.storefront-bold .grid{gap:18px}
+.storefront-bold .cd:hover{transform:translateY(-6px) rotate(-.5deg)}
+.storefront-bold .ct{border-radius:0}
+.storefront-warm .hero{background-image:radial-gradient(circle at 82% 25%,#ffffff50 0 8%,transparent 8.5%),linear-gradient(125deg,var(--ac),#e8b99a);padding-block:8px}
+.storefront-warm .hero .w{padding-top:58px;padding-bottom:62px}
+.storefront-warm .hero .btn{border:0;box-shadow:none;background:#49382d;color:#fff;border-radius:999px}
+.storefront-warm .cats{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media(min-width:760px){.storefront-warm .cats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.storefront-warm .ctimg,.storefront-warm .ctplaceholder{height:130px}
+.storefront-warm .cd:hover{transform:translateY(-4px)}
+.storefront-luxury .hero{background-image:radial-gradient(ellipse at 50% 0%,#4a412b 0%,#171717 60%)}
+.storefront-luxury .hero h1{max-width:900px;margin:0 auto 20px;font-size:clamp(38px,7vw,78px)}
+.storefront-luxury .hero p{margin:0 auto 22px;color:#d5cdbd;font-weight:400}
+.storefront-luxury section.s{padding-top:46px}
+.storefront-luxury .grid{gap:18px}
+.storefront-luxury .cd{background:#202020}
+.storefront-luxury .im{border-bottom:1px solid var(--ac);background:#26231b}
+.storefront-luxury .ci h3{font-family:Georgia,serif;font-weight:500}
+.storefront-sport .hero{background-image:linear-gradient(110deg,#087f5b 0%,#0b513f 72%,#102a43 72%);clip-path:none}
+.storefront-sport .hero .w{padding-top:56px;padding-bottom:70px}
+.storefront-sport .hero h1{font-size:clamp(44px,9vw,94px);line-height:.98;max-width:900px}
+.storefront-sport .hero p{max-width:540px}
+.storefront-sport .hero .btn{background:#fff;color:#102a43;border:0;box-shadow:5px 5px 0 #102a43;border-radius:4px}
+.storefront-sport .cats{gap:8px}
+.storefront-sport .ct{border-radius:4px;box-shadow:none;text-transform:uppercase}
+.storefront-sport .cd:hover{transform:translateY(-5px) scale(1.01)}
+.storefront-fresh .hero{background-image:linear-gradient(115deg,#e0efff 0%,#f7fbff 58%,#d4e9ff 100%);border-radius:0 0 64px 64px}
+.storefront-fresh .hero .w{padding-top:clamp(48px,8vw,94px);padding-bottom:clamp(50px,8vw,92px)}
+.storefront-fresh .hero h1{max-width:780px;font-weight:700;line-height:1.08}
+.storefront-fresh .hero .btn{background:#17324d;color:#fff}
+.storefront-fresh .cats{gap:14px}
+.storefront-fresh .ct{background:linear-gradient(145deg,#fff,#edf6ff)}
+.storefront-fresh .cd{overflow:hidden}
+.storefront-fresh .cd:hover{transform:translateY(-5px);box-shadow:0 16px 32px #17324d20}
+.storefront-classic .hero .w{padding-top:48px;padding-bottom:56px}
+.storefront-classic .hero{background-image:linear-gradient(100deg,var(--ac),color-mix(in srgb,var(--ac) 75%,#fff))}
+.storefront-classic .cd:hover{transform:translateY(-3px)}
+.storefront .store-announcement{position:relative}
+@media(max-width:600px){
+ .storefront-luxury .hero .w,.storefront-sport .hero .w{padding-top:42px;padding-bottom:46px}
+ .storefront-bold .hero:after{font-size:25px}
+ .storefront-warm .ctimg,.storefront-warm .ctplaceholder{height:90px}
+}
