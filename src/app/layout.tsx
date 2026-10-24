@@ -23,11 +23,12 @@ export async function generateMetadata(): Promise<Metadata> {
 const HEX = /^#[0-9a-fA-F]{6}$/;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [name, primary, ink, ann] = await Promise.all([
+  const [name, primary, ink, ann, storefrontDesign] = await Promise.all([
     getSetting("store.name", "خُطوة"),
     getSetting("theme.primary", "#FF4A1C"),
     getSetting("theme.ink", "#0E0E10"),
     getSetting<{ text: string; url?: string; visible: boolean; endsAt?: string } | null>("announcement", null),
+    getSetting<string>("storefront.design", "classic"),
   ]);
   const [extra, session] = await Promise.all([
     getSettings(["maintenance", "contact.phone", "contact.email", "contact.address", "social.facebook", "social.instagram", "social.whatsapp", "social.tiktok", "store.logo", "store.background"]),
@@ -39,7 +40,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const css = `:root{${HEX.test(primary) ? `--ac:${primary};` : ""}${HEX.test(ink) ? `--acx:${ink};` : ""}}`;
   const showAnn = ann?.visible && ann.text && (!ann.endsAt || new Date(ann.endsAt) > new Date());
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" className={`theme-${["classic","minimal","bold","warm","luxury","sport","fresh"].includes(storefrontDesign) ? storefrontDesign : "classic"}`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link href="https://fonts.googleapis.com/css2?family=Changa:wght@600;800&family=Cairo:wght@500;700&display=swap" rel="stylesheet" />
