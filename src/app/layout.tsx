@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: name, template: `%s – ${name}` },
     description: await getSetting("store.description", "متجر أحذية"),
     icons: logo ? { icon: logo, shortcut: logo, apple: logo } : undefined,
-    metadataBase: new URL(process.env.SITE_URL ?? "http://localhost:3000"),
+    metadataBase: new URL(process.env.SITE_URL ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")),
     openGraph: { siteName: name, locale: "ar_EG", type: "website" },
   };
 }
