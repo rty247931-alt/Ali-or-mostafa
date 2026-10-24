@@ -56,10 +56,21 @@ export async function saveImage(file: File, folder = "products"): Promise<string
   const key = `${folder}/${randomUUID()}.${type.ext}`;
   const driver = process.env.STORAGE_DRIVER ?? "local";
   if (driver === "vercel-blob") {
-    // Simplest option on Vercel: Storage > Create > Blob. Vercel adds BLOB_READ_WRITE_TOKEN automatically.
-    if (!process.env.BLOB_READ_WRITE_TOKEN) throw new ApiError(500, "أنشئ Blob Store من Vercel (Storage) واربطه بالمشروع ثم أعد النشر");
+    // Prefer the project's explicitly connected public store. The Vercel integration
+    // currently uses the custom prefix "puplic", so its token is not BLOB_READ_WRITE_TOKEN.
+    // Passing the token explicitly prevents the SDK from silently selecting a different,
+    // private store via BLOB_READ_WRITE_TOKEN.
+    const token = process.env.puplic_READ_WRITE_TOKEN;
+    if (!token) {
+      throw new ApiError(500, "تخزين الصور العام غير مُعد. اربط مخزن Vercel Blob العام بالمشروع ثم أعد النشر");
+    }
     const { put } = await import("@vercel/blob");
-    const r = await put(key, buf, { access: "public", contentType: type.mime, addRandomSuffix: false });
+    const r = await put(key, buf, {
+      access: "public",
+      token,
+      contentType: type.mime,
+      addRandomSuffix: false,
+    });
     return r.url;
   }
   if (driver === "s3") return putS3(key, buf, type.mime);

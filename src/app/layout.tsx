@@ -2,6 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import CartCount from "@/components/CartCount";
+import ThemeModeToggle from "@/components/ThemeModeToggle";
+import BackButton from "@/components/BackButton";
 import { headers } from "next/headers";
 import { getSession } from "@/lib/session";
 import { getSetting, getSettings } from "@/lib/settings";
@@ -15,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: name, template: `%s – ${name}` },
     description: await getSetting("store.description", "متجر أحذية"),
     icons: logo ? { icon: logo, shortcut: logo, apple: logo } : undefined,
-    metadataBase: new URL(process.env.SITE_URL ?? "http://localhost:3000"),
+    metadataBase: new URL((process.env.SITE_URL?.trim() || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"))),
     openGraph: { siteName: name, locale: "ar_EG", type: "website" },
   };
 }
@@ -23,11 +25,12 @@ export async function generateMetadata(): Promise<Metadata> {
 const HEX = /^#[0-9a-fA-F]{6}$/;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [name, primary, ink, ann] = await Promise.all([
+  const [name, primary, ink, ann, storefrontDesign] = await Promise.all([
     getSetting("store.name", "خُطوة"),
     getSetting("theme.primary", "#FF4A1C"),
     getSetting("theme.ink", "#0E0E10"),
     getSetting<{ text: string; url?: string; visible: boolean; endsAt?: string } | null>("announcement", null),
+    getSetting<string>("storefront.design", "classic"),
   ]);
   const [extra, session] = await Promise.all([
     getSettings(["maintenance", "contact.phone", "contact.email", "contact.address", "social.facebook", "social.instagram", "social.whatsapp", "social.tiktok", "store.logo", "store.background"]),
@@ -39,14 +42,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const css = `:root{${HEX.test(primary) ? `--ac:${primary};` : ""}${HEX.test(ink) ? `--acx:${ink};` : ""}}`;
   const showAnn = ann?.visible && ann.text && (!ann.endsAt || new Date(ann.endsAt) > new Date());
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" className={`theme-${["classic","minimal","bold","warm","luxury","sport","fresh"].includes(storefrontDesign) ? storefrontDesign : "classic"}`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link href="https://fonts.googleapis.com/css2?family=Changa:wght@600;800&family=Cairo:wght@500;700&display=swap" rel="stylesheet" />
         <style dangerouslySetInnerHTML={{ __html: css }} />
       </head>
       <body>
-        {showAnn && <div className="ann">{ann!.url ? <Link href={ann!.url}>{ann!.text}</Link> : ann!.text}</div>}
+        {showAnn && <div className="store-announcement" aria-label="إعلانات المتجر"><div className="store-announcement-track"><span>{ann!.url ? <Link href={ann!.url}>{ann!.text}</Link> : ann!.text}</span><b>✦</b><span>{ann!.url ? <Link href={ann!.url}>{ann!.text}</Link> : ann!.text}</span><b>✦</b><span>{ann!.url ? <Link href={ann!.url}>{ann!.text}</Link> : ann!.text}</span><b>✦</b></div></div>}
         <header className="top">
           <div className="hb">
             <Link href="/" className="logo">{typeof extra["store.logo"] === "string" && extra["store.logo"] ? <img src={String(extra["store.logo"])} alt={name} style={{ maxHeight: 48, maxWidth: 150, objectFit: "contain", verticalAlign: "middle" }} /> : <>{name}<i>.</i></>}</Link>
@@ -59,9 +62,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <form action="/shop"><input type="search" name="q" placeholder="ابحث عن حذاء" aria-label="بحث" /></form>
             <Link href="/account" className="ic" aria-label="حسابي">حسابي</Link>
             <CartCount />
+            <BackButton />
+            <ThemeModeToggle />
           </div>
         </header>
-        <main style={typeof extra["store.background"] === "string" && extra["store.background"] ? { backgroundImage: `linear-gradient(#ffffffd9,#ffffffd9),url(${JSON.stringify(String(extra["store.background"]))})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" } : undefined}>{maintenance ? <div className="maint"><div><h1>المتجر تحت الصيانة</h1><p>نعود قريبًا. شكرًا لصبرك.</p></div></div> : children}</main>
+        <main className={`storefront storefront-${["classic","minimal","bold","warm","luxury","sport","fresh"].includes(storefrontDesign) ? storefrontDesign : "classic"}`} style={typeof extra["store.background"] === "string" && extra["store.background"] ? { backgroundImage: `linear-gradient(#ffffffd9,#ffffffd9),url(${JSON.stringify(String(extra["store.background"]))})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" } : undefined}>{maintenance ? <div className="maint"><div><h1>المتجر تحت الصيانة</h1><p>نعود قريبًا. شكرًا لصبرك.</p></div></div> : children}</main>
         <footer className="ft">
           <div className="w fg">
             <div><h4>{name}</h4><p>متجر أحذية رجالي وحريمي وأطفال.</p>
