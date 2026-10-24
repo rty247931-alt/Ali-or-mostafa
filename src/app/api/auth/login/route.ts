@@ -21,6 +21,7 @@ export const POST = route(async (req) => {
     await fakeVerify(password);
     throw new ApiError(401, BAD);
   }
+  if (user.kind === "STAFF") throw new ApiError(403, "حساب الإدارة يسجّل الدخول من بوابة الإدارة فقط");
   if (user.lockedUntil && user.lockedUntil > new Date())
     throw new ApiError(429, "تم إيقاف المحاولات مؤقتًا، جرّب بعد قليل");
 
@@ -36,6 +37,6 @@ export const POST = route(async (req) => {
   }
 
   await db.user.update({ where: { id: user.id }, data: { failedLogins: 0, lockedUntil: null } });
-  await createSession({ uid: user.id, kind: user.kind });
-  return json({ ok: true, kind: user.kind });
+  await createSession({ uid: user.id, kind: "CUSTOMER" });
+  return json({ ok: true, kind: "CUSTOMER" });
 });
