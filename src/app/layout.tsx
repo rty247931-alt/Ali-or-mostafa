@@ -49,7 +49,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <style dangerouslySetInnerHTML={{ __html: css }} />
       </head>
       <body>
-        {showAnn && <div className="ann">{ann!.url ? <Link href={ann!.url}>{ann!.text}</Link> : ann!.text}</div>}
+        {showAnn && <div className="store-announcement" aria-label="إعلانات المتجر"><div className="store-announcement-track"><span>{ann!.url ? <Link href={ann!.url}>{ann!.text}</Link> : ann!.text}</span><b>✦</b><span>{ann!.url ? <Link href={ann!.url}>{ann!.text}</Link> : ann!.text}</span><b>✦</b><span>{ann!.url ? <Link href={ann!.url}>{ann!.text}</Link> : ann!.text}</span><b>✦</b></div></div>}
         <header className="top">
           <div className="hb">
             <Link href="/" className="logo">{typeof extra["store.logo"] === "string" && extra["store.logo"] ? <img src={String(extra["store.logo"])} alt={name} style={{ maxHeight: 48, maxWidth: 150, objectFit: "contain", verticalAlign: "middle" }} /> : <>{name}<i>.</i></>}</Link>
@@ -66,7 +66,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <ThemeModeToggle />
           </div>
         </header>
-        <main style={typeof extra["store.background"] === "string" && extra["store.background"] ? { backgroundImage: `linear-gradient(#ffffffd9,#ffffffd9),url(${JSON.stringify(String(extra["store.background"]))})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" } : undefined}>{maintenance ? <div className="maint"><div><h1>المتجر تحت الصيانة</h1><p>نعود قريبًا. شكرًا لصبرك.</p></div></div> : children}</main>
+        <main className={`storefront storefront-${["classic","minimal","bold","warm","luxury","sport","fresh"].includes(storefrontDesign) ? storefrontDesign : "classic"}`} style={typeof extra["store.background"] === "string" && extra["store.background"] ? { backgroundImage: `linear-gradient(#ffffffd9,#ffffffd9),url(${JSON.stringify(String(extra["store.background"]))})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" } : undefined}>{maintenance ? <div className="maint"><div><h1>المتجر تحت الصيانة</h1><p>نعود قريبًا. شكرًا لصبرك.</p></div></div> : children}</main>
         <footer className="ft">
           <div className="w fg">
             <div><h4>{name}</h4><p>متجر أحذية رجالي وحريمي وأطفال.</p>
