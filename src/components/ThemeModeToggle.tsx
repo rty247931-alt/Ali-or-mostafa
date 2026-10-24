@@ -9,11 +9,13 @@ export default function ThemeModeToggle() {
     const isDark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
     setDark(isDark);
     document.documentElement.classList.toggle("dark-mode", isDark);
+    document.documentElement.classList.toggle("light-mode", !isDark);
   }, []);
   function toggle() {
     const next = !dark;
     setDark(next);
     document.documentElement.classList.toggle("dark-mode", next);
+    document.documentElement.classList.toggle("light-mode", !next);
     window.localStorage.setItem("store-theme-mode", next ? "dark" : "light");
   }
   return <button type="button" onClick={toggle} aria-label={dark ? "تفعيل وضع النهار" : "تفعيل وضع الليل"} title={dark ? "وضع النهار" : "وضع الليل"}
