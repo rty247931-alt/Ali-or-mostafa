@@ -34,12 +34,14 @@ export default async function Home() {
     db.brand.findMany({ where: { isVisible: true, showOnHome: true }, orderBy: { sortOrder: "asc" } }),
     db.review.findMany({ where: { status: "APPROVED" }, orderBy: { createdAt: "desc" }, take: 3, include: { product: { select: { name: true, slug: true } }, user: { select: { fullName: true } } } }),
     db.page.findFirst({ where: { slug: "faq", isPublished: true } }),
-    getSettings(["store.name", "hero.title", "hero.subtitle", "hero.image"]),
+    getSettings(["store.name", "hero.title", "hero.subtitle", "hero.image", "storefront.design", "announcement"]),
     getFavIds(),
   ]);
   const card = (p: ReturnType<typeof toCard>) => <ProductCard key={p.id} p={p} fav={favs.has(p.id)} />;
   const faqItems = (faq?.content ?? "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean).slice(0, 4);
   const heroImg = typeof st["hero.image"] === "string" && st["hero.image"] ? String(st["hero.image"]) : null;
+  const design = ["classic","minimal","bold","warm","luxury","sport","fresh"].includes(String(st["storefront.design"])) ? String(st["storefront.design"]) : "classic";
+  const announcement = st.announcement && typeof st.announcement === "object" ? st.announcement as {text?: string; url?: string; visible?: boolean} : null;
 
   return (
     <>
