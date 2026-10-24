@@ -19,5 +19,5 @@ export default function ThemeModeToggle() {
     window.localStorage.setItem("store-theme-mode", next ? "dark" : "light");
   }
   return <button type="button" onClick={toggle} aria-label={dark ? "تفعيل وضع النهار" : "تفعيل وضع الليل"} title={dark ? "وضع النهار" : "وضع الليل"}
-    className="rounded-full border border-current px-3 py-1 text-sm font-bold">{dark ? "☀ النهار" : "☾ الليل"}</button>;
+    className="rounded-full border border-current px-3 py-1 text-lg font-bold">{dark ? "☀️" : "🌙"}</button>;
 }
