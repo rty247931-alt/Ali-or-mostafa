@@ -15,7 +15,7 @@ export default function AuthForm({ staff = false }: { staff?: boolean }) {
     setBusy(true); setMsg(""); setErrs({});
     const body = mode === "login" ? { identifier: v.identifier, password: v.password } : { fullName: v.fullName, email: v.email, phone: v.phone, password: v.password };
     try {
-      const r = await fetch(`/api/auth/${mode}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const r = await fetch(staff ? "/api/admin/auth/login" : `/api/auth/${mode}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       const d = await r.json();
       if (!r.ok) {
         const fe: Record<string, string> = {};
