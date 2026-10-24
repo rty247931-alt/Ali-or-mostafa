@@ -5,9 +5,12 @@ export const dynamic = "force-dynamic";
 export default function AdminUpdatesPage() {
   return (
     <main dir="rtl" className="mx-auto flex min-h-screen w-full max-w-3xl flex-col px-4 py-8 sm:px-6">
-      <div className="mb-6 flex items-center justify-between gap-4">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-xl font-bold">التحديثات</h1>
-        <Link href="/admin" className="rounded-xl border px-4 py-2 text-sm font-semibold hover:bg-gray-50">رجوع للإدارة</Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/admin/storefront" className="rounded-xl border px-4 py-2 text-sm font-semibold hover:bg-gray-50">تغيير واجهة المتجر</Link>
+          <Link href="/admin" className="rounded-xl border px-4 py-2 text-sm font-semibold hover:bg-gray-50">رجوع للإدارة</Link>
+        </div>
       </div>
 
       <section aria-label="التحديث الضخم مغلق" className="mx-auto flex min-h-64 w-full max-w-sm flex-col items-center justify-center rounded-3xl border-2 border-red-300 bg-red-50 p-7 text-center shadow-sm">
