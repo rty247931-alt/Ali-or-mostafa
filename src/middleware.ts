@@ -12,7 +12,7 @@ export async function middleware(req: NextRequest) {
   if (token && secret) {
     try { await jwtVerify(token, new TextEncoder().encode(secret), { algorithms: ["HS256"] }); ok = true; } catch {}
   }
-  const adminArea = pathname.startsWith("/admin") && !pathname.startsWith("/admin/login");
+  const adminArea = pathname.startsWith("/admin") && !pathname.startsWith("/admin/login") && pathname !== "/admin/manifest.webmanifest";
   if (!ok && (adminArea || PRIVATE.includes(pathname)))
     return NextResponse.redirect(new URL(adminArea ? "/admin/login" : "/account", req.url));
 
