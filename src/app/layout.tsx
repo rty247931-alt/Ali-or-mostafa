@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import CartCount from "@/components/CartCount";
+import ThemeToggle from "@/components/ThemeToggle";
 import { headers } from "next/headers";
 import { getSession } from "@/lib/session";
 import { getSetting, getSettings } from "@/lib/settings";
@@ -59,6 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <form action="/shop"><input type="search" name="q" placeholder="ابحث عن حذاء" aria-label="بحث" /></form>
             <Link href="/account" className="ic" aria-label="حسابي">حسابي</Link>
             <CartCount />
+            <ThemeToggle />
           </div>
         </header>
         <main style={typeof extra["store.background"] === "string" && extra["store.background"] ? { backgroundImage: `linear-gradient(#ffffffd9,#ffffffd9),url(${JSON.stringify(String(extra["store.background"]))})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" } : undefined}>{maintenance ? <div className="maint"><div><h1>المتجر تحت الصيانة</h1><p>نعود قريبًا. شكرًا لصبرك.</p></div></div> : children}</main>
