@@ -4,9 +4,10 @@ import { addLine } from "@/lib/cart-client";
 
 type V = { id: string; colorName: string; colorHex: string | null; sizeLabel: string; available: number };
 type Img = { url: string; alt: string | null; colorName: string | null };
+type Media = { kind: "image" | "video"; url: string; alt?: string | null };
 
-export default function ProductBuy({ name, price, oldPrice, variants, images, videoUrl }: {
-  name: string; price: number; oldPrice: number | null; variants: V[]; images: Img[]; videoUrl?: string | null;
+export default function ProductBuy({ name, price, oldPrice, variants, images, videoUrl, videoUrls = [] }: {
+  name: string; price: number; oldPrice: number | null; variants: V[]; images: Img[]; videoUrl?: string | null; videoUrls?: string[];
 }) {
   const colors = useMemo(() => [...new Map(variants.map((v) => [v.colorName, v.colorHex])).entries()], [variants]);
   const [color, setColor] = useState(colors[0]?.[0] ?? "");
@@ -20,6 +21,9 @@ export default function ProductBuy({ name, price, oldPrice, variants, images, vi
   const current = sizes.find((v) => v.sizeLabel === size);
   const shown = images.filter((i) => !i.colorName || i.colorName === color);
   const gallery = shown.length ? shown : images;
+  const media: Media[] = [...gallery.map((i) => ({ kind: "image" as const, url: i.url, alt: i.alt })), ...[...new Set([...(videoUrls ?? []), ...(videoUrl ? [videoUrl] : [])])].map((url) => ({ kind: "video" as const, url }))];
+  const [mediaIdx, setMediaIdx] = useState(0);
+  const selected = media[Math.min(mediaIdx, Math.max(0, media.length - 1))];
   const main = gallery[Math.min(imgIdx, gallery.length - 1)];
   const egp = (n: number) => `${(n * qty).toLocaleString("ar-EG", { maximumFractionDigits: 2 })} ج.م`;
 
@@ -33,14 +37,11 @@ export default function ProductBuy({ name, price, oldPrice, variants, images, vi
   return (
     <div className="det">
       <div>
-        <div className={`big ${zoom ? "z" : ""}`} onClick={() => setZoom(!zoom)}>
-          {videoUrl ? <video src={videoUrl} controls playsInline preload="metadata" aria-label={`فيديو ${name}`} style={{ width: "100%", maxHeight: 520, objectFit: "contain" }} /> : main ? <img src={main.url} alt={main.alt ?? name} /> : <span className="noimg">لا توجد صورة</span>}
+        <div className={`big ${zoom ? "z" : ""}`} style={{position:"relative"}} onClick={() => { if(selected?.kind==="image") setZoom(!zoom); }}>
+          {selected?.kind === "video" ? <video key={selected.url} src={selected.url} controls playsInline preload="metadata" aria-label={`فيديو ${name}`} style={{ width: "100%", maxHeight: 520, objectFit: "contain" }} /> : selected ? <img src={selected.url} alt={selected.alt ?? name} /> : <span className="noimg">لا توجد صور أو فيديوهات</span>}
         </div>
-        {gallery.length > 1 && (
-          <div className="th">{gallery.map((g, i) => (
-            <button key={g.url} aria-pressed={i === imgIdx} aria-label={`صورة ${i + 1}`} onClick={() => setImgIdx(i)}><img src={g.url} alt="" /></button>
-          ))}</div>
-        )}
+        {media.length > 1 && <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:10,margin:"8px 0"}}><button className="o" aria-label="السابق" onClick={()=>{setMediaIdx((mediaIdx-1+media.length)%media.length);setZoom(false);}}>❮ السابق</button><span>{mediaIdx+1} / {media.length}</span><button className="o" aria-label="التالي" onClick={()=>{setMediaIdx((mediaIdx+1)%media.length);setZoom(false);}}>التالي ❯</button></div>}
+        {media.length > 1 && <div className="th">{media.map((m,i)=><button key={m.kind+m.url} aria-pressed={i===mediaIdx} aria-label={m.kind==="video"?`فيديو ${i+1}`:`صورة ${i+1}`} onClick={()=>{setMediaIdx(i);setZoom(false);}}>{m.kind==="video"?<span style={{display:"grid",placeItems:"center",width:72,height:72,background:"#222",color:"white",borderRadius:8}}>▶ فيديو</span>:<img src={m.url} alt="" />}</button>)}</div>}
       </div>
       <div>
         <div className="price"><b style={{ fontSize: 26 }}>{price.toLocaleString("ar-EG", { maximumFractionDigits: 2 })} ج.م</b>{oldPrice && <s>{oldPrice.toLocaleString("ar-EG")} ج.م</s>}</div>
