@@ -203,6 +203,7 @@ model Product {
   sku           String   @unique
   shortDesc     String?
   videoUrl      String?
+  videoUrls     String[]  @default([])
   description   String?
   material      String?
   shoeType      String?
