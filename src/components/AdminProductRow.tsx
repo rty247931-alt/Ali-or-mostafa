@@ -8,7 +8,7 @@ type Opt = { id: string; name: string };
 export type AdminP = {
   id: string; name: string; status: string; base: number; sale: number | null; categoryId: string; brandId: string | null;
   shortDesc: string; description: string; material: string; shoeType: string; originCountry: string; careInfo: string;
-  searchKeywords: string; seoTitle: string; seoDescription: string; images: Img[]; variants: Variant[];
+  searchKeywords: string; seoTitle: string; seoDescription: string; videoUrl?: string | null; images: Img[]; variants: Variant[];
 };
 type Perms = { price: boolean; update: boolean; stock: boolean };
 
@@ -96,6 +96,9 @@ export default function AdminProductRow({ p, perms, categories, brands, selected
           }} />
           {upl && <div role="status" style={{ color: "var(--ac)" }}>{upl}</div>}
           <div style={{ fontSize: 12, color: "var(--mu)" }}>تقدر تختار أكتر من صورة مرة واحدة (حتى ١٠). الصور بتتصغّر تلقائيًا قبل الرفع، فصور الموبايل العادية تنفع.</div>
+          <label className="lbl" style={{ marginTop: 10 }}>رفع فيديو المنتج (MP4 / WebM / MOV — حتى 100 ميجابايت)</label>
+          <input type="file" accept="video/mp4,video/webm,video/quicktime" aria-label="رفع فيديو المنتج" onChange={async (e) => { const file=e.target.files?.[0]; e.target.value=""; if(!file)return; if(file.size>100*1024*1024){setMsg({t:"حجم الفيديو يجب ألا يتجاوز 100 ميجابايت",ok:false});return;} const fd=new FormData();fd.append("file",file);setUpl("جاري رفع الفيديو…");try{await call(`/api/admin/products/${p.id}/video`,"POST",fd);setMsg({t:"تم رفع الفيديو",ok:true});router.refresh();}catch(err){setMsg({t:err instanceof Error?err.message:"فشل رفع الفيديو",ok:false});}finally{setUpl("");}}} />
+          {p.videoUrl && <div style={{marginTop:8}}><video src={p.videoUrl} controls playsInline style={{width:"100%",maxWidth:360,maxHeight:220}} /><button className="btn o sm" onClick={()=>run(()=>call(`/api/admin/products/${p.id}/video`,"DELETE"),"تم حذف فيديو المنتج")}>حذف الفيديو</button></div>}
         </details>
       )}
 
