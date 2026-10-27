@@ -54,7 +54,7 @@ export async function saveImage(file: File, folder = "products"): Promise<string
   const buf = raw;
   const type = sniffed;
   const key = `${folder}/${randomUUID()}.${type.ext}`;
-  const driver = process.env.STORAGE_DRIVER ?? "local";
+  const driver = process.env.STORAGE_DRIVER ?? (process.env.NODE_ENV === "production" && process.env.BLOB_READ_WRITE_TOKEN ? "vercel-blob" : "local");
   if (driver === "vercel-blob") {
     // Simplest option on Vercel: Storage > Create > Blob. Vercel adds BLOB_READ_WRITE_TOKEN automatically.
     if (!process.env.BLOB_READ_WRITE_TOKEN) throw new ApiError(500, "أنشئ Blob Store من Vercel (Storage) واربطه بالمشروع ثم أعد النشر");
