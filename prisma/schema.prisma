@@ -202,6 +202,7 @@ model Product {
   slug          String   @unique
   sku           String   @unique
   shortDesc     String?
+  videoUrl      String?
   description   String?
   material      String?
   shoeType      String?
