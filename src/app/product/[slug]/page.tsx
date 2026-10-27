@@ -75,7 +75,7 @@ export default async function ProductPage({ params }: Props) {
       </div>
       {p.brand && <div className="br">{p.brand.name}</div>}
       {inStock ? (
-        <ProductBuy name={p.name} price={price} oldPrice={p.discountPercent > 0 ? Number(p.basePrice) : null} variants={variants} images={p.images.map((i) => ({ url: i.url, alt: i.alt, colorName: i.color?.name ?? null }))} videoUrl={p.videoUrl} />
+        <ProductBuy name={p.name} price={price} oldPrice={p.discountPercent > 0 ? Number(p.basePrice) : null} variants={variants} images={p.images.map((i) => ({ url: i.url, alt: i.alt, colorName: i.color?.name ?? null }))} videoUrl={p.videoUrl} videoUrls={p.videoUrls} />
       ) : <div className="empty" style={{ marginTop: 20 }}>هذا المنتج غير متوفر حاليًا.</div>}
 
       <section className="s">
