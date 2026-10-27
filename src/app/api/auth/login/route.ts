@@ -15,7 +15,7 @@ export const POST = route(async (req) => {
   rateLimit(req, "login", 25, 600);
   const { identifier, password } = schema.parse(await req.json());
   const id = identifier.includes("@") ? identifier.toLowerCase() : normalizeDigits(identifier);
-  const user = await db.user.findFirst({ where: { OR: [{ email: id }, { phone: id }] } });
+  const user = await db.user.findFirst({ where: { OR: [{ email: id }, { phone: id }, { username: identifier.trim().toLowerCase() }] } });
 
   if (!user) {
     await fakeVerify(password);

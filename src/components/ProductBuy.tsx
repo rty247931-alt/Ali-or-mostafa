@@ -5,8 +5,8 @@ import { addLine } from "@/lib/cart-client";
 type V = { id: string; colorName: string; colorHex: string | null; sizeLabel: string; available: number };
 type Img = { url: string; alt: string | null; colorName: string | null };
 
-export default function ProductBuy({ name, price, oldPrice, variants, images }: {
-  name: string; price: number; oldPrice: number | null; variants: V[]; images: Img[];
+export default function ProductBuy({ name, price, oldPrice, variants, images, videoUrl }: {
+  name: string; price: number; oldPrice: number | null; variants: V[]; images: Img[]; videoUrl?: string | null;
 }) {
   const colors = useMemo(() => [...new Map(variants.map((v) => [v.colorName, v.colorHex])).entries()], [variants]);
   const [color, setColor] = useState(colors[0]?.[0] ?? "");

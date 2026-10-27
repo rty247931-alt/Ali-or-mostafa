@@ -83,6 +83,7 @@ model User {
   id              String    @id @default(cuid())
   kind            UserKind  @default(CUSTOMER)
   email           String?   @unique
+  username        String?   @unique
   phone           String?   @unique
   passwordHash    String    // argon2id / bcrypt hash only, never plain text
   fullName        String
@@ -202,6 +203,7 @@ model Product {
   slug          String   @unique
   sku           String   @unique
   shortDesc     String?
+  videoUrl      String?
   description   String?
   material      String?
   shoeType      String?

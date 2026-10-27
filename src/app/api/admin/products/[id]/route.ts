@@ -8,7 +8,7 @@ import { discountPercent, effectiveCents, toCents } from "@/lib/core";
 const opt = (n: number) => z.string().trim().max(n).nullish().transform((v) => (v === undefined ? undefined : v ? v : null));
 const schema = z.object({
   name: z.string().trim().min(2).max(150).optional(),
-  shortDesc: opt(300), description: opt(5000), material: opt(60), shoeType: opt(60), originCountry: opt(60), careInfo: opt(300),
+  shortDesc: opt(300), videoUrl: opt(2048), description: opt(5000), material: opt(60), shoeType: opt(60), originCountry: opt(60), careInfo: opt(300),
   searchKeywords: opt(300), seoTitle: opt(120), seoDescription: opt(250),
   categoryId: z.string().min(1).optional(), brandId: z.string().nullish().transform((v) => (v === undefined ? undefined : v || null)),
   status: z.enum(["DRAFT", "ACTIVE", "HIDDEN", "PAUSED", "ARCHIVED"]).optional(),
