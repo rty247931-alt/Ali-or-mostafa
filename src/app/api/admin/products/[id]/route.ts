@@ -4,6 +4,7 @@ import { ApiError, json, route } from "@/lib/errors";
 import { audit } from "@/lib/audit";
 import { permsOf, requirePerm } from "@/lib/perm";
 import { discountPercent, effectiveCents, toCents } from "@/lib/core";
+import { Prisma } from "@prisma/client";
 
 const opt = (n: number) => z.string().trim().max(n).nullish().transform((v) => (v === undefined ? undefined : v ? v : null));
 const schema = z.object({
@@ -54,7 +55,16 @@ export const DELETE = route<{ params: { id: string } }>(async (_req, { params })
     await audit(db, userId, "product.archive", "Product", params.id);
     return json({ archived: true });
   }
-  await db.product.delete({ where: { id: params.id } });
-  await audit(db, userId, "product.delete", "Product", params.id);
-  return json({ deleted: true });
+  try {
+    await db.product.delete({ where: { id: params.id } });
+    await audit(db, userId, "product.delete", "Product", params.id);
+    return json({ deleted: true });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError && (e.code === "P2003" || e.code === "P2014")) {
+      await db.product.update({ where: { id: params.id }, data: { status: "ARCHIVED" } });
+      await audit(db, userId, "product.archive", "Product", params.id, { reason: "linked records" });
+      return json({ archived: true, message: "المنتج مرتبط ببيانات أخرى، تم أرشفته بدلًا من حذفه" });
+    }
+    throw e;
+  }
 });
