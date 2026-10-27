@@ -23,7 +23,7 @@ export default async function AdminProducts() {
         products={products.map((p) => ({
           id: p.id, name: p.name, status: p.status, base: Number(p.basePrice), sale: p.salePrice ? Number(p.salePrice) : null,
           categoryId: p.categoryId, brandId: p.brandId, shortDesc: p.shortDesc ?? "", description: p.description ?? "", material: p.material ?? "", shoeType: p.shoeType ?? "",
-          originCountry: p.originCountry ?? "", careInfo: p.careInfo ?? "", searchKeywords: p.searchKeywords ?? "", seoTitle: p.seoTitle ?? "", seoDescription: p.seoDescription ?? "",
+          originCountry: p.originCountry ?? "", careInfo: p.careInfo ?? "", searchKeywords: p.searchKeywords ?? "", seoTitle: p.seoTitle ?? "", seoDescription: p.seoDescription ?? "", videoUrl: p.videoUrl,
           images: p.images.map((i) => ({ id: i.id, url: i.url, color: i.color?.name ?? null, isPrimary: i.isPrimary })),
           variants: p.variants.map((v) => ({ id: v.id, color: v.color.name, size: v.size.label, onHand: v.inventory?.onHand ?? 0, reserved: v.inventory?.reserved ?? 0 })),
         }))}
