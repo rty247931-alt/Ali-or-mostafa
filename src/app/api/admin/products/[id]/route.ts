@@ -60,11 +60,13 @@ export const DELETE = route<{ params: { id: string } }>(async (_req, { params })
     await audit(db, userId, "product.delete", "Product", params.id);
     return json({ deleted: true });
   } catch (e) {
-    if (e instanceof Prisma.PrismaClientKnownRequestError && (e.code === "P2003" || e.code === "P2014")) {
+    // Database connectors may report FK restrictions as raw connector errors, not Prisma P2003.
+    try {
       await db.product.update({ where: { id: params.id }, data: { status: "ARCHIVED" } });
-      await audit(db, userId, "product.archive", "Product", params.id, { reason: "linked records" });
-      return json({ archived: true, message: "المنتج مرتبط ببيانات أخرى، تم أرشفته بدلًا من حذفه" });
+      await audit(db, userId, "product.archive", "Product", params.id, { reason: "linked records or database restriction" });
+      return json({ archived: true, message: "المنتج مرتبط بحركات مخزون أو طلبات؛ تم نقله للأرشيف للحفاظ على السجلات" });
+    } catch {
+      throw e;
     }
-    throw e;
   }
 });
