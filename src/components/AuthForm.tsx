@@ -39,7 +39,7 @@ export default function AuthForm({ staff = false }: { staff?: boolean }) {
         </div>
       )}
       {mode === "register" ? (<>{f("fullName", "الاسم الكامل")}{f("email", "البريد الإلكتروني", { type: "email" })}{f("phone", "رقم الموبايل", { inputMode: "tel" })}</>)
-        : f("identifier", "البريد أو رقم الموبايل", { autoComplete: "username" })}
+        : f("identifier", "البريد أو رقم الموبايل أو اسم المستخدم", { autoComplete: "username" })}
       {f("password", mode === "register" ? "كلمة المرور (٨ أحرف على الأقل)" : "كلمة المرور", { type: "password", autoComplete: mode === "login" ? "current-password" : "new-password" })}
       {msg && <div className="err" role="alert">{msg}</div>}
       {!staff && mode === "login" && <p><a href="/account/forgot" style={{ color: "var(--ac)" }}>نسيت كلمة المرور؟</a></p>}
