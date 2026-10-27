@@ -5,8 +5,8 @@ import { addLine } from "@/lib/cart-client";
 type V = { id: string; colorName: string; colorHex: string | null; sizeLabel: string; available: number };
 type Img = { url: string; alt: string | null; colorName: string | null };
 
-export default function ProductBuy({ name, price, oldPrice, variants, images }: {
-  name: string; price: number; oldPrice: number | null; variants: V[]; images: Img[];
+export default function ProductBuy({ name, price, oldPrice, variants, images, videoUrl }: {
+  name: string; price: number; oldPrice: number | null; variants: V[]; images: Img[]; videoUrl?: string | null;
 }) {
   const colors = useMemo(() => [...new Map(variants.map((v) => [v.colorName, v.colorHex])).entries()], [variants]);
   const [color, setColor] = useState(colors[0]?.[0] ?? "");
@@ -34,7 +34,7 @@ export default function ProductBuy({ name, price, oldPrice, variants, images }: 
     <div className="det">
       <div>
         <div className={`big ${zoom ? "z" : ""}`} onClick={() => setZoom(!zoom)}>
-          {main ? <img src={main.url} alt={main.alt ?? name} /> : <span className="noimg">لا توجد صورة</span>}
+          {videoUrl ? <video src={videoUrl} controls playsInline preload="metadata" aria-label={`فيديو ${name}`} style={{ width: "100%", maxHeight: 520, objectFit: "contain" }} /> : main ? <img src={main.url} alt={main.alt ?? name} /> : <span className="noimg">لا توجد صورة</span>}
         </div>
         {gallery.length > 1 && (
           <div className="th">{gallery.map((g, i) => (
