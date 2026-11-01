@@ -29,7 +29,10 @@ export async function POST(req: Request) {
         onBeforeGenerateToken: async () => ({
           allowedContentTypes: ["video/mp4", "video/webm", "video/quicktime", "video/ogg"],
           maximumSizeInBytes: 5 * 1024 * 1024 * 1024
-        })
+        }),
+        onUploadCompleted: async () => {
+          // Upload metadata is saved separately by the admin.
+        }
       });
       return Response.json(result);
     }
