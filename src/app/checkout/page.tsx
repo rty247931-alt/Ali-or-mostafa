@@ -30,11 +30,22 @@ export default function Checkout() {
     // One idempotency key per checkout attempt: resubmitting the same order can never create two.
     key.current = sessionStorage.getItem("st_idem") ?? crypto.randomUUID();
     sessionStorage.setItem("st_idem", key.current);
-    const g = sessionStorage.getItem("st_gov") ?? ""; setGov(g);
     const lines = readCart();
-    if (!lines.length || !g) { router.replace("/cart"); return; }
-    fetch("/api/cart/quote", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: lines, governorate: g, couponCode: sessionStorage.getItem("st_coupon") || null }) })
-      .then((r) => r.json()).then((q) => setTotal(q.totalCents ?? null)).catch(() => setMsg("تعذر تحميل الإجمالي"));
+    if (!lines.length) { router.replace("/cart"); return; }
+    fetch("/api/account/checkout").then(async (r) => {
+      if (r.status === 401) { router.replace("/account?next=%2Fcheckout"); return null; }
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error ?? "تعذر تحميل بيانات الحساب");
+      setF((old) => ({ ...old, ...d.customer, ...(d.address ?? {}) }));
+      const savedGov = d.address?.governorate || sessionStorage.getItem("st_gov") || "";
+      setGov(savedGov);
+      if (savedGov) sessionStorage.setItem("st_gov", savedGov);
+      return savedGov;
+    }).then((g) => {
+      if (!g) return;
+      return fetch("/api/cart/quote", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ items: lines, governorate: g, couponCode: sessionStorage.getItem("st_coupon") || null }) })
+        .then((r) => r.json()).then((q) => setTotal(q.totalCents ?? null));
+    }).catch(() => setMsg("تعذر تحميل بيانات الحساب أو الإجمالي"));
     fetch("/api/payment-methods").then((r) => r.json()).then((d) => { setOnlineOk(!!d.online); setWalletData({ wallet: !!d.wallet, wallets: d.wallets ?? {}, instructions: d.instructions ?? "" }); }).catch(() => {});
   }, [router]);
 
