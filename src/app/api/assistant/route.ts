@@ -21,7 +21,8 @@ export const POST = route(async (req) => {
     return json({ answer });
   } catch (error) {
     const code = error instanceof Error ? error.message : "";
-    if (code === "AI_PROVIDER_NOT_CONFIGURED") throw new ApiError(503, "المساعد الذكي غير مفعّل حاليًا. تواصل مع خدمة العملاء.");
+    if (code === "AI_API_KEY_MISSING") throw new ApiError(503, "المساعد مفعّل، لكن مفتاح مزود الذكاء الاصطناعي غير مضاف في Vercel. أضف GEMINI_API_KEY أو OPENAI_API_KEY حسب المزود المختار.");
+    if (code === "AI_PROVIDER_UNSUPPORTED") throw new ApiError(503, "مزود المساعد غير معروف. اختر gemini أو openai واحفظ الإعدادات.");
     throw new ApiError(502, "حصلت مشكلة مؤقتة أثناء الرد. جرّب مرة أخرى بعد قليل.");
   }
 });
