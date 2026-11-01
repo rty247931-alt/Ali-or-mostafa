@@ -1,10 +1,55 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { addLine } from "@/lib/cart-client";
 
 type V = { id: string; colorName: string; colorHex: string | null; sizeLabel: string; available: number };
 type Img = { url: string; alt: string | null; colorName: string | null };
 type Media = { kind: "image" | "video"; url: string; alt?: string | null };
+
+function VideoThumbnail({ url, index }: { url: string; index: number }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [poster, setPoster] = useState("");
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    let done = false;
+    const capture = () => {
+      if (done || !video.videoWidth || !video.videoHeight) return;
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 160;
+        canvas.height = 160;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        const scale = Math.max(160 / video.videoWidth, 160 / video.videoHeight);
+        const width = video.videoWidth * scale;
+        const height = video.videoHeight * scale;
+        ctx.drawImage(video, (160 - width) / 2, (160 - height) / 2, width, height);
+        const image = canvas.toDataURL("image/jpeg", 0.78);
+        if (!done) setPoster(image);
+      } catch { /* Some remote video hosts block canvas previews; keep the video fallback. */ }
+    };
+    const seek = () => {
+      try { video.currentTime = Math.min(0.25, Math.max(0, (video.duration || 1) / 10)); }
+      catch { capture(); }
+    };
+    video.addEventListener("loadeddata", seek);
+    video.addEventListener("seeked", capture);
+    if (video.readyState >= 2) seek();
+    return () => {
+      done = true;
+      video.removeEventListener("loadeddata", seek);
+      video.removeEventListener("seeked", capture);
+    };
+  }, [url]);
+  return (
+    <span style={{ position: "relative", display: "grid", placeItems: "center", width: 72, height: 72, overflow: "hidden", background: "#222", borderRadius: 8 }}>
+      {poster ? <img src={poster} alt={`معاينة الفيديو ${index}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <video ref={videoRef} src={url} muted playsInline preload="auto" aria-hidden="true" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+      <span style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", color: "white", background: "#0003", fontSize: 22, textShadow: "0 1px 3px #000" }}>▶</span>
+      {!poster && <video ref={null} src={undefined} style={{ display: "none" }} />}
+    </span>
+  );
+}
 
 export default function ProductBuy({ name, price, oldPrice, variants, images, videoUrl, videoUrls = [] }: {
   name: string; price: number; oldPrice: number | null; variants: V[]; images: Img[]; videoUrl?: string | null; videoUrls?: string[];
