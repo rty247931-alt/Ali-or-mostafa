@@ -67,3 +67,45 @@ details{border-bottom:1px solid var(--ln);padding:8px 0}summary{cursor:pointer}
 .filter-more summary{font-weight:800;color:var(--ac)}
 .filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px;padding-top:12px;align-items:center}
 @media(max-width:520px){.w{padding-inline:12px}.grid{gap:18px 10px}.ci{padding:8px}.ci h3{font-size:15px}.price b{font-size:18px}.offer-card{flex-basis:82vw}.tools .btn{flex:1}}
+
+
+/* Mobile layout: keep the storefront inside the viewport */
+@media(max-width:600px){
+  html,body{max-width:100%;overflow-x:hidden}
+  .w{width:100%;max-width:100%;padding-inline:10px}
+  .hb{gap:8px;padding:8px 10px;flex-wrap:wrap}
+  .logo{font-size:22px;max-width:34%;overflow:hidden;white-space:nowrap}
+  .hb nav{order:5;flex:1 1 100%;width:100%;gap:16px;padding:3px 2px 6px}
+  .hb nav a{font-size:13px}
+  .hb .ic{padding:5px 7px;font-size:13px}
+  .theme-toggle{padding:5px 8px;font-size:12px}
+  .hero .w{padding-top:28px;padding-bottom:30px}
+  .hero h1{font-size:clamp(32px,9vw,48px)}
+  section.s{padding-top:24px}
+  .sh2 h2{font-size:23px}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 9px}
+  .cd{min-width:0;border-radius:14px;box-shadow:3px 3px 0 var(--tx)}
+  .ci{padding:7px 8px 10px;min-width:0}
+  .ci h3{font-size:14px;overflow-wrap:anywhere}
+  .price{gap:5px}
+  .price b{font-size:17px}
+  .det{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;padding-top:12px}
+  .det>div{min-width:0}
+  .big{width:100%;aspect-ratio:1/1;max-height: min(78vw,420px);margin-inline:auto;border-radius:14px}
+  .big img{object-fit:contain}
+  .big video{display:block;width:100%;height:100%;max-height:100%!important;object-fit:contain;background:#111}
+  .th{display:flex;overflow-x:auto;max-width:100%;padding:2px 1px 8px;scroll-snap-type:x mandatory}
+  .th button{flex:0 0 64px;width:64px;height:64px;scroll-snap-align:start}
+  .det .opts{gap:6px}
+  .det .o{padding:6px 11px;min-width:42px}
+  .btn{max-width:100%;white-space:normal}
+  .tbl{display:block;overflow-x:auto}
+  .pg{padding:18px 10px}
+  .kp{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fg{grid-template-columns:minmax(0,1fr)}
+}
+@media(min-width:601px) and (max-width:859px){
+  .det{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+  .big{max-height:460px}
+  .hb{gap:10px}
+}
