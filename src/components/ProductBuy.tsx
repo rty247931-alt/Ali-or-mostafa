@@ -7,28 +7,6 @@ type Img = { url: string; alt: string | null; colorName: string | null };
 type Media = { kind: "image" | "video"; url: string; alt?: string | null };
 
 function VideoThumbnail({ url, index }: { url: string; index: number }) {
-  const [poster, setPoster] = useState<string | null>(null);
-  useEffect(() => {
-    let active = true;
-    const video = document.createElement("video");
-    video.muted = true; video.playsInline = true; video.preload = "auto"; video.crossOrigin = "anonymous"; video.src = url;
-    const capture = () => {
-      try {
-        const canvas = document.createElement("canvas");
-        canvas.width = video.videoWidth || 320; canvas.height = video.videoHeight || 180;
-        const ctx = canvas.getContext("2d");
-        if (!ctx || !video.videoWidth) return;
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        if (active) setPoster(canvas.toDataURL("image/jpeg", 0.76));
-      } catch { /* Keep the video-frame fallback when cross-origin capture is blocked. */ }
-    };
-    video.addEventListener("loadeddata", capture, { once: true }); video.load();
-    return () => { active = false; video.pause(); video.removeAttribute("src"); video.load(); };
-  }, [url]);
-  return poster ? <img src={poster} alt="" style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 8 }} /> : <video src={url} muted playsInline preload="metadata" aria-label={"معاينة الفيديو " + index} style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 8, background: "#222" }} />;
-}
-
-function VideoThumbnail({ url, index }: { url: string; index: number }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [poster, setPoster] = useState("");
   useEffect(() => {
