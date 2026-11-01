@@ -52,10 +52,10 @@ export default async function Home() {
         </div>
       </div>
       <Section title="الأقسام"><div className="cats">{categories.map((c) => <Link key={c.id} className="ct" href={`/shop?category=${c.slug}`}>{c.imageUrl ? <img className="ctimg" src={c.imageUrl} alt="" loading="lazy" /> : <span className="ctplaceholder" aria-hidden="true">✦</span>}<span>{c.name}</span></Link>)}</div></Section>
-      {banners.length > 0 && <Section title="عروض وإعلانات"><div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))" }}>{banners.map((b) => (
-        <a key={b.id} className="bn" href={b.buttonUrl || "#"}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src={b.imageUrl} alt={b.title ?? ""} loading="lazy" />
-          {(b.title || b.subtitle) && <div className="t"><b>{b.title}</b><div>{b.subtitle}</div>{b.buttonText && <span className="tg">{b.buttonText}</span>}</div>}</a>
-      ))}</div></Section>}
+      {banners.length > 0 && <Section title="عروض وإعلانات"><div className="offer-marquee" aria-label="عروض وإعلانات"><div className="offer-track">{[...banners, ...banners].map((b, i) => (
+        <Link key={b.id + "-" + i} className="bn offer-card" href={b.buttonUrl || "/shop"} aria-label={b.title || "تصفح العرض"}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src={b.imageUrl} alt={b.title ?? "عرض من المتجر"} loading="lazy" />
+          {(b.title || b.subtitle) && <div className="t"><b>{b.title}</b><div>{b.subtitle}</div>{b.buttonText && <span className="tg">{b.buttonText}</span>}</div>}</Link>
+      ))}</div></div></Section>}
       {total === 0 && <section className="s"><div className="w"><div className="empty">لا توجد منتجات منشورة بعد. أضف المنتجات من لوحة الإدارة.</div></div></section>}
       {fresh.length > 0 && <Section title="وصل حديثًا" href="/shop"><div className="grid">{fresh.map(card)}</div></Section>}
       {deals.length > 0 && <Section title="عروض اليوم" href="/shop?discount=1"><div className="grid">{deals.map(card)}</div></Section>}
