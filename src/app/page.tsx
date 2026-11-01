@@ -20,7 +20,7 @@ function Section({ title, href, children }: { title: string; href?: string; chil
 
 export default async function Home() {
   const now = new Date();
-  const [categories, fresh, deals, best, viewed, total, banners, brands, reviews, faq, st, favs] = await Promise.all([
+  const [categories, fresh, deals, best, viewed, total, banners, brands, reviews, faq, st, favs, introVideos] = await Promise.all([
     db.category.findMany({ where: { isVisible: true, parentId: null }, orderBy: { sortOrder: "asc" } }),
     list({}, { createdAt: "desc" }),
     list({ discountPercent: { gt: 0 } }, { discountPercent: "desc" }),
@@ -39,7 +39,7 @@ export default async function Home() {
   ]);
   const card = (p: ReturnType<typeof toCard>) => <ProductCard key={p.id} p={p} fav={favs.has(p.id)} />;
   const faqItems = (faq?.content ?? "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean).slice(0, 4);
-  const heroImg = typeof st["hero.image"] === "string" && st["hero.image"] ? String(st["hero.image"]) : null;
+  const introList = Array.isArray(introVideos["intro.videos"]) ? introVideos["intro.videos"] as { title: string; url: string; cover: string }[] : [];\n  const heroImg = typeof st["hero.image"] === "string" && st["hero.image"] ? String(st["hero.image"]) : null;
 
   return (
     <>
@@ -51,7 +51,7 @@ export default async function Home() {
           <Link className="btn o" href="/shop?isNew=1">اكتشف المجموعة الجديدة</Link>
         </div>
       </div>
-      <Section title="الأقسام"><div className="cats">{categories.map((c) => <Link key={c.id} className="ct" href={`/shop?category=${c.slug}`}>{c.imageUrl ? <img className="ctimg" src={c.imageUrl} alt="" loading="lazy" /> : <span className="ctplaceholder" aria-hidden="true">✦</span>}<span>{c.name}</span></Link>)}</div></Section>
+      {introList.length > 0 && <Section title="الفيديو التعريفي"><div className="grid" style={{gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))"}}>{introList.map((v,i)=><article className="box" key={v.url}><video controls playsInline preload="none" poster={v.cover} style={{width:"100%",maxHeight:360,objectFit:"contain",borderRadius:10,background:"#111"}} aria-label={v.title}><source src={v.url}/></video><h3>{v.title}</h3></article>)}</div></Section>}\n      <Section title="الأقسام"><div className="cats">{categories.map((c) => <Link key={c.id} className="ct" href={`/shop?category=${c.slug}`}>{c.imageUrl ? <img className="ctimg" src={c.imageUrl} alt="" loading="lazy" /> : <span className="ctplaceholder" aria-hidden="true">✦</span>}<span>{c.name}</span></Link>)}</div></Section>
       {banners.length > 0 && <Section title="عروض وإعلانات"><div className="offer-marquee" aria-label="عروض وإعلانات"><div className="offer-track">{[...banners, ...banners].map((b, i) => (
         <Link key={b.id + "-" + i} className="bn offer-card" href={b.buttonUrl || "/shop"} aria-label={b.title || "تصفح العرض"}>{/* eslint-disable-next-line @next/next/no-img-element */}<img src={b.imageUrl} alt={b.title ?? "عرض من المتجر"} loading="lazy" />
           {(b.title || b.subtitle) && <div className="t"><b>{b.title}</b><div>{b.subtitle}</div>{b.buttonText && <span className="tg">{b.buttonText}</span>}</div>}</Link>
