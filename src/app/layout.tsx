@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import CartCount from "@/components/CartCount";
 import ThemeToggle from "@/components/ThemeToggle";
+import StoreAssistant from "@/components/StoreAssistant";
 import { headers } from "next/headers";
 import { getSession } from "@/lib/session";
 import { getSetting, getSettings } from "@/lib/settings";
@@ -30,9 +31,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     getSetting("theme.ink", "#0E0E10"),
     getSetting<{ text: string; url?: string; visible: boolean; endsAt?: string } | null>("announcement", null),
   ]);
-  const [extra, session] = await Promise.all([
+  const [extra, session, assistantEnabled] = await Promise.all([
     getSettings(["maintenance", "contact.phone", "contact.email", "contact.address", "social.facebook", "social.instagram", "social.whatsapp", "social.tiktok", "store.logo", "store.background"]),
     getSession(),
+    getSetting<boolean>("assistant.enabled", true),
   ]);
   const path = headers().get("x-path") ?? "/";
   const maintenance = extra.maintenance === true && !path.startsWith("/admin") && session?.kind !== "STAFF";
@@ -64,6 +66,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
         </header>
         <main style={typeof extra["store.background"] === "string" && extra["store.background"] ? { backgroundImage: `linear-gradient(#ffffff30,#ffffff30),url(${JSON.stringify(String(extra["store.background"]))})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" } : undefined}>{maintenance ? <div className="maint"><div><h1>المتجر تحت الصيانة</h1><p>نعود قريبًا. شكرًا لصبرك.</p></div></div> : children}</main>
+        {assistantEnabled && !maintenance && !path.startsWith("/admin") && <StoreAssistant />}
         <footer className="ft">
           <div className="w fg">
             <div><h4>{name}</h4><p>متجر أحذية رجالي وحريمي وأطفال.</p>
