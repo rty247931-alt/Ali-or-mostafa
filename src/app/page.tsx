@@ -43,7 +43,7 @@ export default async function Home() {
 
   return (
     <>
-      <div className="hero" style={heroImg ? { backgroundImage: `linear-gradient(#0008,#0008),url(${JSON.stringify(heroImg).slice(1, -1)})`, backgroundSize: "cover", backgroundPosition: "center", color: "#fff" } : undefined}>
+      <div className="hero" style={heroImg ? { backgroundImage: `linear-gradient(#0003,#0003),url(${JSON.stringify(heroImg).slice(1, -1)})`, backgroundSize: "cover", backgroundPosition: "center", color: "#fff" } : undefined}>
         <div className="w">
           <h1>{String(st["hero.title"] || "أحذية تمشي معاك لآخر اليوم")}</h1>
           <p>{String(st["hero.subtitle"] || "رجالي وحريمي وأطفال. اختر مقاسك المتاح فعلًا، واطلب بسهولة.")}</p>
