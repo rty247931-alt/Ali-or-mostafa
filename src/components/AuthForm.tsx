@@ -16,7 +16,11 @@ export default function AuthForm({ staff = false }: { staff?: boolean }) {
     const body = mode === "login" ? { identifier: v.identifier, password: v.password } : { fullName: v.fullName, email: v.email, phone: v.phone, password: v.password };
     try {
       const r = await fetch(`/api/auth/${mode}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-      const d = await r.json();
+      const raw = await r.text();
+      let d: any;
+      try { d = raw ? JSON.parse(raw) : {}; }
+      catch { d = { error: raw.startsWith("Request En") ? "الخادم رفض الطلب أو انتهت مهلة الاتصال. حاول مرة أخرى." : "استجابة غير مفهومة من الخادم." }; }
+      if (!r.ok && !d.error) d.error = "تعذر تنفيذ العملية";
       if (!r.ok) {
         const fe: Record<string, string> = {};
         for (const [k, x] of Object.entries((d.fields ?? {}) as Record<string, string[]>)) fe[k] = x[0];
