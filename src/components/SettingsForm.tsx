@@ -25,7 +25,7 @@ export default function SettingsForm({ values, paymobConfigured, paymentsVerifie
   const [a, setA] = useState({ text: ann.text ?? "", url: ann.url ?? "", visible: !!ann.visible, endsAt: ann.endsAt ? String(ann.endsAt).slice(0, 16) : "" });
   const [msg, setMsg] = useState<{ t: string; ok: boolean } | null>(null);
   const [busy, setBusy] = useState(false);
-  const def = (it: Item) => v[it.key] ?? (it.type === "bool" ? (it.key === "checkout.guest.enabled" || it.key === "payments.wallet.enabled" || it.key === "assistant.enabled") : it.type === "number" ? 0 : it.type === "color" ? "#000000" : "");
+  const def = (it: Item) => v[it.key] ?? (it.type === "bool" ? (it.key === "checkout.guest.enabled" || it.key === "payments.wallet.enabled" || it.key === "assistant.enabled") : it.type === "number" ? 0 : it.type === "color" ? "#000000" : it.key === "assistant.provider" ? "gemini" : it.key === "assistant.model" ? "gemini-2.0-flash" : "");
 
 
   async function uploadSettingImage(key: string, file?: File) {
