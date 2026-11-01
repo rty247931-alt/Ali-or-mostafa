@@ -63,7 +63,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <ThemeToggle />
           </div>
         </header>
-        <main style={typeof extra["store.background"] === "string" && extra["store.background"] ? { backgroundImage: `linear-gradient(#ffffffd9,#ffffffd9),url(${JSON.stringify(String(extra["store.background"]))})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" } : undefined}>{maintenance ? <div className="maint"><div><h1>المتجر تحت الصيانة</h1><p>نعود قريبًا. شكرًا لصبرك.</p></div></div> : children}</main>
+        <main style={typeof extra["store.background"] === "string" && extra["store.background"] ? { backgroundImage: `linear-gradient(#ffffff30,#ffffff30),url(${JSON.stringify(String(extra["store.background"]))})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" } : undefined}>{maintenance ? <div className="maint"><div><h1>المتجر تحت الصيانة</h1><p>نعود قريبًا. شكرًا لصبرك.</p></div></div> : children}</main>
         <footer className="ft">
           <div className="w fg">
             <div><h4>{name}</h4><p>متجر أحذية رجالي وحريمي وأطفال.</p>
