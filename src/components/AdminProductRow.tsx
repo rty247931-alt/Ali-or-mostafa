@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { upload } from "@vercel/blob/client";
 
 type Variant = { id: string; color: string; size: string; onHand: number; reserved: number };
 type Img = { id: string; url: string; color: string | null; isPrimary: boolean };
@@ -97,7 +98,7 @@ export default function AdminProductRow({ p, perms, categories, brands, selected
           {upl && <div role="status" style={{ color: "var(--ac)" }}>{upl}</div>}
           <div style={{ fontSize: 12, color: "var(--mu)" }}>تقدر تختار أكتر من صورة مرة واحدة (حتى ١٠). الصور بتتصغّر تلقائيًا قبل الرفع، فصور الموبايل العادية تنفع.</div>
           <label className="lbl" style={{ marginTop: 10 }}>إضافة فيديو للمنتج (MP4 / WebM / MOV — حسب حد التخزين)</label>
-          <input type="file" accept="video/mp4,video/webm,video/quicktime,video/ogg" aria-label="رفع فيديو المنتج" onChange={async (e) => { const file=e.target.files?.[0]; e.target.value=""; if(!file)return;  const fd=new FormData();fd.append("file",file);setUpl("جاري رفع الفيديو…");try{await call(`/api/admin/products/${p.id}/video`,"POST",fd);setMsg({t:"تم رفع الفيديو",ok:true});router.refresh();}catch(err){setMsg({t:err instanceof Error?err.message:"فشل رفع الفيديو",ok:false});}finally{setUpl("");}}} />
+          <input type="file" accept="video/mp4,video/webm,video/quicktime,video/ogg" aria-label="رفع فيديو المنتج" onChange={async (e) => { const file=e.target.files?.[0]; e.target.value=""; if(!file)return; setUpl("جاري رفع الفيديو مباشرةً…"); try { await upload("products/videos/"+p.id+"/"+Date.now()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g, "_"),file,{access:"public",handleUploadUrl:"/api/admin/products/"+p.id+"/video"}); setMsg({t:"تم رفع الفيديو وحفظه للمنتج",ok:true}); router.refresh(); } catch(err) { setMsg({t:err instanceof Error?err.message:"فشل رفع الفيديو",ok:false}); } finally { setUpl(""); } }} />
           {[...new Set([...(p.videoUrls ?? []), ...(p.videoUrl ? [p.videoUrl] : [])])].map((url,i)=><div key={url} style={{marginTop:8}}><video src={url} controls playsInline style={{width:"100%",maxWidth:360,maxHeight:220}} /><button className="btn o sm" onClick={()=>run(()=>call(`/api/admin/products/${p.id}/video`,"DELETE",{url}),"تم حذف الفيديو")}>حذف الفيديو {i+1}</button></div>)}
         </details>
       )}
