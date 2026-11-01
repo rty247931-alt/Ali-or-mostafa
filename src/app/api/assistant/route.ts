@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { json, route, ApiError } from "@/lib/errors";
 import { rateLimit } from "@/lib/ratelimit";
+import { db } from "@/lib/db";
 import { buildStoreContext, generateAssistantReply } from "@/lib/assistant";
 
 const inputSchema = z.object({ messages: z.array(z.object({
@@ -9,6 +10,8 @@ const inputSchema = z.object({ messages: z.array(z.object({
 
 export const POST = route(async (req) => {
   rateLimit(req, "store-assistant", 12, 60);
+  const enabled = await db.storeSetting.findUnique({ where: { key: "assistant.enabled" } });
+  if (enabled?.value === false) throw new ApiError(503, "المساعد الذكي متوقف مؤقتًا.");
   const input = inputSchema.parse(await req.json());
   if (input.messages[input.messages.length - 1].role !== "user") throw new ApiError(400, "أرسل سؤالك أولًا");
   const messages = input.messages.slice(-8);
