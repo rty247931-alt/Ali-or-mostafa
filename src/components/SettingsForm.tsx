@@ -119,6 +119,7 @@ export default function SettingsForm({ values, paymobConfigured, paymentsVerifie
               {it.hint && <div style={{ fontSize: 12, color: "var(--mu)" }}>{it.hint}</div>}
             </div>
           ))}
+          {g.title === "مساعد الذكاء الاصطناعي" && <button className="btn o sm" style={{ marginTop: 10 }} disabled={busy} onClick={testAssistant}>اختبار اتصال المساعد الذكي</button>}
         </div>
       ))}
       <div className="box" style={{ marginBottom: 10 }}>
@@ -141,11 +142,6 @@ export default function SettingsForm({ values, paymobConfigured, paymentsVerifie
         <label className="lbl" htmlFor="admin-new-password">كلمة المرور الجديدة</label>
         <input id="admin-new-password" className="in" type="password" autoComplete="new-password" value={profile.newPassword} onChange={(e) => setProfile({ ...profile, newPassword: e.target.value })} />
         <button className="btn o sm" style={{ marginTop: 10 }} disabled={busy} onClick={saveProfile}>حفظ بيانات المدير</button>
-      </div>
-      <div className="box" style={{ margin: "14px 0" }}>
-        <h3 style={{ margin: 0 }}>مساعد الذكاء الاصطناعي</h3>
-        <p style={{ color: "var(--mu)" }}>اختر المزود والنموذج من القسم أعلاه، ثم احفظ الإعدادات واختبر الاتصال. يجب إضافة GEMINI_API_KEY أو OPENAI_API_KEY في متغيرات Vercel.</p>
-        <button className="btn o sm" disabled={busy} onClick={testAssistant}>اختبار اتصال المساعد الذكي</button>
       </div>
       <div className="box" style={{ margin: "14px 0" }}>
         <h3 style={{ margin: 0 }}>الدفع الإلكتروني</h3>
