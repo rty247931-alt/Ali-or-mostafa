@@ -46,7 +46,6 @@ function VideoThumbnail({ url, index }: { url: string; index: number }) {
     <span style={{ position: "relative", display: "grid", placeItems: "center", width: 72, height: 72, overflow: "hidden", background: "#222", borderRadius: 8 }}>
       {poster ? <img src={poster} alt={`معاينة الفيديو ${index}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <video ref={videoRef} src={url} muted playsInline preload="auto" aria-hidden="true" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
       <span style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", color: "white", background: "#0003", fontSize: 22, textShadow: "0 1px 3px #000" }}>▶</span>
-      {!poster && <video ref={null} src={undefined} style={{ display: "none" }} />}
     </span>
   );
 }
