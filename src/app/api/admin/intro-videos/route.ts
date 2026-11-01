@@ -4,7 +4,7 @@ import { ApiError, json, route } from "@/lib/errors";
 import { requirePerm } from "@/lib/perm";
 import { audit } from "@/lib/audit";
 import { saveImage } from "@/lib/storage";
-import { put } from "@vercel/blob";
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 
 const item = z.object({ title: z.string().trim().min(1).max(100), url: z.string().url().max(1000), cover: z.string().url().max(1000) });
 export const GET = route(async () => {
@@ -12,9 +12,9 @@ export const GET = route(async () => {
   const row = await db.storeSetting.findUnique({ where: { key: "intro.videos" } });
   return json({ videos: Array.isArray(row?.value) ? row.value : [] });
 });
-export const POST = route(async (req) => {
+export async function POST(req: Request) {
   await requirePerm("settings.update");
-  const fd = await req.formData();
+  if (req.headers.get("content-type")?.includes("application/json")) {\n    try {\n      const body = (await req.json()) as HandleUploadBody;\n      const result = await handleUpload({ body, request: req, onBeforeGenerateToken: async () => ({ allowedContentTypes: ["video/mp4", "video/webm", "video/quicktime", "video/ogg"], maximumSizeInBytes: 5 * 1024 * 1024 * 1024 }) });\n      return Response.json(result);\n    } catch (error) { return Response.json({ error: error instanceof Error ? error.message : "فشل تجهيز رفع الفيديو" }, { status: 400 }); }\n  }\n  try {\n  const fd = await req.formData();
   const file = fd.get("file");
   const kind = String(fd.get("kind") ?? "");
   if (!(file instanceof File) || file.size < 16) throw new ApiError(400, "اختر ملفًا صالحًا");
