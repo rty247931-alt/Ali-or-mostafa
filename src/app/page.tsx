@@ -36,6 +36,7 @@ export default async function Home() {
     db.page.findFirst({ where: { slug: "faq", isPublished: true } }),
     getSettings(["store.name", "hero.title", "hero.subtitle", "hero.image"]),
     getFavIds(),
+    getSettings(["intro.videos"]),
   ]);
   const card = (p: ReturnType<typeof toCard>) => <ProductCard key={p.id} p={p} fav={favs.has(p.id)} />;
   const faqItems = (faq?.content ?? "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean).slice(0, 4);
