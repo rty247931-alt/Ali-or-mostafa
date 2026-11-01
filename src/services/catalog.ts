@@ -71,7 +71,7 @@ export function toCard(r: Prisma.ProductGetPayload<{ select: typeof cardSelect }
     price: Number(r.currentPrice), oldPrice: r.discountPercent > 0 ? Number(r.basePrice) : null,
     discountPercent: r.discountPercent, inStock,
     image: r.images[0]?.url ?? null, altImage: r.images[1]?.url ?? null,
-    isNew: Date.now() - r.createdAt.getTime() < 30 * 864e5,
+    isNew: Date.now() - r.createdAt.getTime() < 7 * 864e5,
     bestSeller: r.soldCount >= 10,
     sizes: [...new Set(r.variants.filter((v) => (v.inventory?.onHand ?? 0) - (v.inventory?.reserved ?? 0) > 0).map((v) => v.size.label))],
   };
