@@ -50,3 +50,20 @@ footer.ft{background:#0E0E10;color:#cfc9bb;margin-top:48px;padding:30px 0}.ft a{
 .soc{display:flex;gap:8px;flex-wrap:wrap}.soc a{border:1px solid #ffffff40;border-radius:99px;padding:2px 14px;font-size:13px;display:inline-block}
 details{border-bottom:1px solid var(--ln);padding:8px 0}summary{cursor:pointer}
 .maint{min-height:70vh;display:grid;place-items:center;text-align:center;padding:20px}
+
+/* Offers marquee and compact, responsive catalog filters */
+.offer-marquee{overflow:hidden;position:relative;padding:4px 2px 12px;direction:ltr}
+.offer-track{display:flex;direction:ltr;gap:16px;width:max-content;animation:offers-scroll 32s linear infinite}
+.offer-marquee:hover .offer-track,.offer-marquee:focus-within .offer-track{animation-play-state:paused}
+.offer-card{flex:0 0 clamp(250px,34vw,390px);height:clamp(170px,24vw,250px);min-height:0;direction:rtl}
+.offer-card img{width:100%;height:100%;object-fit:cover}
+.offer-card .t{direction:rtl}
+@keyframes offers-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.offer-track{animation:none;overflow-x:auto}}
+.shop-tools{align-items:center}
+.shop-tools>.search-main{flex:2 1 260px;min-width:min(100%,230px)}
+.shop-tools>select.in{flex:1 1 135px;min-width:125px}
+.filter-more{flex:1 1 100%;border:1px solid var(--ln);border-radius:12px;padding:8px 12px;background:var(--sf)}
+.filter-more summary{font-weight:800;color:var(--ac)}
+.filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px;padding-top:12px;align-items:center}
+@media(max-width:520px){.w{padding-inline:12px}.grid{gap:18px 10px}.ci{padding:8px}.ci h3{font-size:15px}.price b{font-size:18px}.offer-card{flex-basis:82vw}.tools .btn{flex:1}}
