@@ -153,3 +153,23 @@ footer.ft{background:#30372F;color:#E5E7DF}
 .filter-more{border-color:var(--ln)}
 .filter-more summary{color:#56644F}
 .toast{background:#30372F;color:#fff}
+
+
+/* High-contrast storefront labels and section headings (light + dark themes) */
+.sh2 h2,.sh2 a{color:#202820!important}
+.sh2 a{font-weight:800;text-decoration:underline;text-underline-offset:4px}
+.ct{color:#202820!important;background:#fff!important}
+.ct:hover{color:#202820!important;background:#E9EDE5!important}
+.brs a{color:#202820!important;background:#fff!important}
+.brs a:hover{color:#202820!important;background:#E9EDE5!important}
+section.s{color:var(--tx)}
+section.s .sh2 h2{color:var(--tx)!important}
+section.s .sh2 a{color:#40583B!important}
+:root[data-theme="dark"] .sh2 h2,
+:root[data-theme="dark"] section.s .sh2 h2{color:#F4F6F0!important}
+:root[data-theme="dark"] .sh2 a,
+:root[data-theme="dark"] section.s .sh2 a{color:#D5E6C8!important}
+:root[data-theme="dark"] .ct,
+:root[data-theme="dark"] .brs a{color:#202820!important;background:#F5F6F2!important}
+:root[data-theme="dark"] .ct:hover,
+:root[data-theme="dark"] .brs a:hover{color:#202820!important;background:#E0E9D9!important}
