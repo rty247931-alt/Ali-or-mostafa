@@ -4,7 +4,7 @@ type ChatMessage = { role: "user" | "assistant"; content: string };
 export async function buildStoreContext(question: string) {
   const q = question.trim().slice(0, 160);
   const stopWords = new Set(["عايز", "عاوزه", "عاوز", "محتاج", "محتاجه", "من", "في", "على", "عن", "ايه", "إيه", "هل", "لو", "ممكن", "عندي", "عندكم", "هو", "هي", "ده", "دي", "اللي", "مع", "بكام"]);
-  const terms = q.split(/[\\s،,.!?؟]+/).filter((term) => term.length > 1 && !stopWords.has(term)).slice(0, 6);
+  const terms = q.split(/[\s،,.!?؟]+/).filter((term) => term.length > 1 && !stopWords.has(term)).slice(0, 6);
   const searchTerms = terms.length ? terms : [q];
   const [products, pages, settings] = await Promise.all([
     db.product.findMany({
