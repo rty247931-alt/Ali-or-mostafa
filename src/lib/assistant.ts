@@ -3,14 +3,17 @@ type ChatMessage = { role: "user" | "assistant"; content: string };
 
 export async function buildStoreContext(question: string) {
   const q = question.trim().slice(0, 160);
+  const stopWords = new Set(["عايز", "عاوزه", "عاوز", "محتاج", "محتاجه", "من", "في", "على", "عن", "ايه", "إيه", "هل", "لو", "ممكن", "عندي", "عندكم", "هو", "هي", "ده", "دي", "اللي", "مع", "بكام"]);
+  const terms = q.split(/[\\s،,.!?؟]+/).filter((term) => term.length > 1 && !stopWords.has(term)).slice(0, 6);
+  const searchTerms = terms.length ? terms : [q];
   const [products, pages, settings] = await Promise.all([
     db.product.findMany({
-      where: { status: "ACTIVE", OR: [
-        { name: { contains: q, mode: "insensitive" } },
-        { searchKeywords: { contains: q, mode: "insensitive" } },
-        { description: { contains: q, mode: "insensitive" } },
-        { brand: { name: { contains: q, mode: "insensitive" } } },
-      ] },
+      where: { status: "ACTIVE", OR: searchTerms.flatMap((term) => [
+        { name: { contains: term, mode: "insensitive" as const } },
+        { searchKeywords: { contains: term, mode: "insensitive" as const } },
+        { description: { contains: term, mode: "insensitive" as const } },
+        { brand: { name: { contains: term, mode: "insensitive" as const } } },
+      ]) },
       take: 8,
       select: { name: true, slug: true, currentPrice: true, basePrice: true, description: true, shortDesc: true, material: true, shoeType: true,
         brand: { select: { name: true } }, variants: { where: { isActive: true }, select: {
