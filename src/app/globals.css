@@ -109,3 +109,47 @@ details{border-bottom:1px solid var(--ln);padding:8px 0}summary{cursor:pointer}
   .big{max-height:460px}
   .hb{gap:10px}
 }
+
+
+/* Calm classic identity: warm ivory, muted sage and charcoal */
+:root{
+  --bg:#F7F6F2;--sf:#FFFFFF;--tx:#30342F;--mu:#74786F;
+  --ac:#78866F;--acx:#FFFFFF;--ln:#E5E3DA;--im:#EFEEE8;
+  --er:#A6534B;--ok:#52745B;
+}
+:root[data-theme="dark"]{
+  --bg:#20231F;--sf:#292D28;--tx:#ECEDE7;--mu:#B2B6AA;
+  --ln:#41463E;--im:#343930;--ac:#A6B19A;--acx:#20231F;
+}
+:root[data-theme="light"]{color-scheme:light}
+:focus-visible{outline-color:var(--ac)}
+.ann{background:#E9E8DF;color:#454B42}
+header.top{background:#30372F;color:#F7F6F2;border-bottom:1px solid #596252}
+.logo i,.hb nav a:hover,.sh2 a,.ft a:hover{color:#C4CEB9}
+.hb .ic b{background:#A7B39A;color:#263025}
+.btn{background:var(--ac);color:#fff;border:1px solid var(--ac);border-radius:10px;box-shadow:none;font-weight:700}
+.btn:active{transform:translateY(1px);box-shadow:none}
+.btn.o{color:var(--tx);border-color:var(--ln)}
+.hero{background:#EAECE4;color:#30372F;border-bottom:1px solid #DDE1D6}
+.hero .btn{background:#56644F;color:#fff;border-color:#56644F}
+.sh2 h2{border-bottom:2px solid var(--ac)}
+.cats .ct,.cd,.bn,.kp>div{border:1px solid var(--ln);border-radius:14px;box-shadow:0 2px 10px #30372F0A}
+.ct:hover,.brs a:hover{background:#E9EDE5;color:#30372F}
+.cd:hover{transform:translateY(-2px);box-shadow:0 7px 18px #30372F12}
+.im{background:var(--im);border-bottom:1px solid var(--ln)}
+.tg{background:#56644F;color:#fff;border-radius:5px;transform:none}
+.tg.d{background:#A6534B}
+.box,.in,.o,.q button,.tabs a{border:1px solid var(--ln);border-radius:9px}
+.o[aria-pressed=true]{background:#E9EDE5;color:#394535;border-color:#AAB5A0}
+.big{border:1px solid var(--ln);border-radius:14px;background:var(--im)}
+.th button{background:var(--im)}
+.th button[aria-pressed=true]{border-color:var(--ac)}
+footer.ft{background:#30372F;color:#E5E7DF}
+.ft h4{color:#fff}
+.nl{background:#E9ECE4;color:#30372F;border:1px solid #DCE2D6}
+.nl input[type=email]{background:#fff;color:#30372F;border:1px solid #D5DCCF}
+.soc a{border-color:#9DA893}
+.brs a{border:1px solid var(--ln);background:var(--sf);border-radius:10px}
+.filter-more{border-color:var(--ln)}
+.filter-more summary{color:#56644F}
+.toast{background:#30372F;color:#fff}
