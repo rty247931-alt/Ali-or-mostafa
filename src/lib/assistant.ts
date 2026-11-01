@@ -9,7 +9,7 @@ export async function buildStoreContext(question: string) {
         { name: { contains: q, mode: "insensitive" } },
         { searchKeywords: { contains: q, mode: "insensitive" } },
         { description: { contains: q, mode: "insensitive" } },
-        { brand: { name: { contains: q, mode: "insensitive" } },
+        { brand: { name: { contains: q, mode: "insensitive" } } },
       ] },
       take: 8,
       select: { name: true, slug: true, currentPrice: true, basePrice: true, description: true, shortDesc: true, material: true, shoeType: true,
