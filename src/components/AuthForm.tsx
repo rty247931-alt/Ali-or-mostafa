@@ -27,7 +27,9 @@ export default function AuthForm({ staff = false }: { staff?: boolean }) {
         setErrs(fe); setMsg(d.error ?? "تعذر تنفيذ العملية"); setBusy(false); return;
       }
       if (staff && d.kind !== "STAFF") { await fetch("/api/auth/logout", { method: "POST" }); setMsg("هذا الحساب ليس حساب إدارة"); setBusy(false); return; }
-      const requested = new URLSearchParams(window.location.search).get("next");\n      const safeNext = requested && requested.startsWith("/") && !requested.startsWith("//") ? requested : "/account/orders";\n      router.replace(staff ? "/admin" : safeNext); router.refresh();
+      const requested = new URLSearchParams(window.location.search).get("next");
+      const safeNext = requested && requested.startsWith("/") && !requested.startsWith("//") ? requested : "/account/orders";
+      router.replace(staff ? "/admin" : safeNext); router.refresh();
     } catch { setMsg("فشل الاتصال، حاول مرة أخرى"); setBusy(false); }
   }
 
