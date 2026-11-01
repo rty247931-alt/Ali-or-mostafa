@@ -14,8 +14,10 @@ export const POST = route(async () => {
     return json({ ok: true });
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
-    if (message === "AI_PROVIDER_NOT_CONFIGURED")
-      throw new ApiError(400, "أضف مفتاح مزود الذكاء الاصطناعي في متغيرات Vercel.");
+    if (message === "AI_API_KEY_MISSING")
+      throw new ApiError(400, "مفتاح المزود المختار غير موجود في Vercel. أضف GEMINI_API_KEY أو OPENAI_API_KEY حسب الاختيار.");
+    if (message === "AI_PROVIDER_UNSUPPORTED")
+      throw new ApiError(400, "قيمة المزود غير صحيحة. اختر gemini أو openai ثم احفظ الإعدادات.");
     throw new ApiError(502, "فشل اختبار المساعد. راجع اسم النموذج ومفتاح المزود في Vercel.");
   }
 });
