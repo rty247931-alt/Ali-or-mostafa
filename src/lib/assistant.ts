@@ -71,7 +71,7 @@ export async function generateAssistantReply(messages: ChatMessage[], context: A
       body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents, generationConfig: { temperature: 0.4, maxOutputTokens: 700 } }),
       signal: AbortSignal.timeout(25000),
     });
-    if (!response.ok) throw new Error("AI_PROVIDER_ERROR");
+    if (!response.ok) throw new Error(`AI_PROVIDER_ERROR_${response.status}`);
     const data = await response.json();
     const answer = data?.candidates?.[0]?.content?.parts?.map((p: { text?: string }) => p.text || "").join("").trim();
     if (!answer) throw new Error("AI_EMPTY_RESPONSE");
@@ -86,7 +86,7 @@ export async function generateAssistantReply(messages: ChatMessage[], context: A
       body: JSON.stringify({ model, messages: [{ role: "system", content: system }, ...messages], temperature: 0.4, max_tokens: 700 }),
       signal: AbortSignal.timeout(25000),
     });
-    if (!response.ok) throw new Error("AI_PROVIDER_ERROR");
+    if (!response.ok) throw new Error(`AI_PROVIDER_ERROR_${response.status}`);
     const data = await response.json();
     const answer = data?.choices?.[0]?.message?.content?.trim();
     if (!answer) throw new Error("AI_EMPTY_RESPONSE");
