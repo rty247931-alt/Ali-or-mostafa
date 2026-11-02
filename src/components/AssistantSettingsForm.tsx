@@ -15,15 +15,15 @@ const MODELS: Record<Provider, { value: string; label: string }[]> = {
     { value: "gpt-4.1", label: "GPT-4.1 — متقدم" },
   ],
   groq: [
-    { value: "llama-3.3-70b-versatile", label: "Llama 3.3 70B — موصى به" },
-    { value: "llama-3.1-8b-instant", label: "Llama 3.1 8B — سريع" },
-    { value: "openai/gpt-oss-20b", label: "GPT-OSS 20B" },
+    { value: "openai/gpt-oss-120b", label: "GPT-OSS 120B — موصى به" },
+    { value: "openai/gpt-oss-20b", label: "GPT-OSS 20B — سريع" },
+    { value: "qwen/qwen3.8-27b", label: "Qwen 3.8 27B" },
   ],
 };
 const DEFAULT_MODEL: Record<Provider, string> = {
   gemini: "gemini-2.0-flash",
   openai: "gpt-4o-mini",
-  groq: "llama-3.3-70b-versatile",
+  groq: "openai/gpt-oss-120b",
 };
 const PROVIDER_LABEL: Record<Provider, string> = { gemini: "Google Gemini", openai: "OpenAI", groq: "Groq" };
 
@@ -38,7 +38,7 @@ export default function AssistantSettingsForm() {
 
   useEffect(() => {
     fetch("/api/admin/assistant-settings")
-      .then(async r => { const d = await r.json(); if (!r.ok) throw new Error(d.error || "تعذر تحميل الإعدادات"); setConfig(d); })
+      .then(async r => { const d = await r.json(); if (!r.ok) throw new Error(d.error || "تعذر تحميل الإعدادات"); setConfig(d.provider === "groq" && d.model === "llama-3.3-70b-versatile" ? { ...d, model: DEFAULT_MODEL.groq } : d); })
       .catch(e => { setNotice(e instanceof Error ? e.message : "تعذر تحميل الإعدادات"); })
       .finally(() => setLoading(false));
   }, []);
