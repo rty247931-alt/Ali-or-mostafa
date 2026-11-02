@@ -52,8 +52,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {showAnn && <div className="ann">{ann!.url ? <Link href={ann!.url}>{ann!.text}</Link> : ann!.text}</div>}
         <header className="top">
           <div className="hb">
-            <Link href="/" className="logo">{typeof extra["store.logo"] === "string" && extra["store.logo"] ? <img src={String(extra["store.logo"])} alt={name} style={{ maxHeight: 48, maxWidth: 150, objectFit: "contain", verticalAlign: "middle" }} /> : <>{name}<i>.</i></>}</Link>
-            <nav>
+            <Link href="/" className="logo" aria-label={`${name} - الصفحة الرئيسية`}>{typeof extra["store.logo"] === "string" && extra["store.logo"] ? <img src={String(extra["store.logo"])} alt={name} /> : <span className="brand-copy"><span className="brand-name">{name}<i>.</i></span><span className="brand-tagline">اختار خطوتك بثقة</span></span>}</Link>
+            <nav aria-label="التنقل الرئيسي">
               <Link href="/shop">المتجر</Link>
               <Link href="/shop?discount=1">العروض</Link>
               <Link href="/pages/about">من نحن</Link>
