@@ -14,15 +14,16 @@ export const POST = route(async (req) => {
   if (enabled?.value === false) throw new ApiError(503, "المساعد الذكي متوقف مؤقتًا.");
   const input = inputSchema.parse(await req.json());
   if (input.messages[input.messages.length - 1].role !== "user") throw new ApiError(400, "أرسل سؤالك أولًا");
-  const messages = input.messages.slice(-8);
-  const context = await buildStoreContext(messages[messages.length - 1].content);
+  const messages = input.messages.slice(-10);
+  const recentQuestion = messages.filter((m) => m.role === "user").slice(-4).map((m) => m.content).join(" ");
+  const context = await buildStoreContext(recentQuestion);
   try {
     const answer = await generateAssistantReply(messages, context);
     return json({ answer });
   } catch (error) {
     const code = error instanceof Error ? error.message : "";
-    if (code === "AI_API_KEY_MISSING") throw new ApiError(503, "المساعد مفعّل، لكن مفتاح مزود الذكاء الاصطناعي غير مضاف في Vercel. أضف GEMINI_API_KEY أو OPENAI_API_KEY حسب المزود المختار.");
-    if (code === "AI_PROVIDER_UNSUPPORTED") throw new ApiError(503, "مزود المساعد غير معروف. اختر gemini أو openai واحفظ الإعدادات.");
+    if (code === "AI_API_KEY_MISSING") throw new ApiError(503, "المساعد مفعّل، لكن مفتاح مزود الذكاء الاصطناعي غير مضاف في Vercel. راجع إعدادات مزود الذكاء الاصطناعي.");
+    if (code === "AI_PROVIDER_UNSUPPORTED") throw new ApiError(503, "مزود المساعد غير معروف. اختر مزودًا مدعومًا واحفظ الإعدادات.");
     throw new ApiError(502, "حصلت مشكلة مؤقتة أثناء الرد. جرّب مرة أخرى بعد قليل.");
   }
 });
