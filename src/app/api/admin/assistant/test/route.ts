@@ -36,6 +36,14 @@ export const POST = route(async (req) => {
       throw new ApiError(400, "المزود المختار غير مدعوم. اختر Gemini أو OpenAI أو Groq.");
     if (message === "AI_EMPTY_RESPONSE")
       throw new ApiError(502, "المزود استجاب دون نص. جرّب موديلًا آخر.");
-    throw new ApiError(502, "فشل الاتصال بالمزود. راجع صلاحية المفتاح واسم الموديل.");
+    if (message === "AI_PROVIDER_ERROR_401" || message === "AI_PROVIDER_ERROR_403")
+      throw new ApiError(502, "المزود رفض مفتاح API (401/403). راجع المفتاح من لوحة Groq وتأكد أنه نشط، ثم حدّث GROQ_API_KEY في Vercel.");
+    if (message === "AI_PROVIDER_ERROR_404")
+      throw new ApiError(502, "الموديل غير موجود أو غير متاح لهذا الحساب (404). اختر موديل Groq متاحًا مثل llama-3.3-70b-versatile.");
+    if (message === "AI_PROVIDER_ERROR_429")
+      throw new ApiError(502, "تم تجاوز حد الاستخدام أو الرصيد المتاح لدى المزود (429). راجع حدود حساب Groq.");
+    if (message === "AI_PROVIDER_ERROR_400")
+      throw new ApiError(502, "Groq رفض صيغة الطلب (400). راجع اسم الموديل وإعدادات الطلب.");
+    throw new ApiError(502, "تعذر الاتصال بالمزود بسبب خطأ غير متوقع. أعد المحاولة أو راجع سجلات Vercel.");
   }
 });
