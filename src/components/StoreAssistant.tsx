@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 type Message = { role: "user" | "assistant"; content: string };
 const suggestions = ["عايز حذاء للمشي اليومي", "عايز حاجة رياضية بسعر مناسب", "إيه المقاسات والألوان المتاحة؟", "قارنلي بين الأحذية"];
 
@@ -10,13 +10,30 @@ export default function StoreAssistant() {
   const [busy, setBusy] = useState(false);
   const [voiceOn, setVoiceOn] = useState(false);
   const [voiceError, setVoiceError] = useState("");
-  function speak(text: string) {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) { setVoiceError("المتصفح لا يدعم قراءة الردود بالصوت."); return; }
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "ar-EG";
-    utterance.rate = 1;
-    window.speechSynthesis.speak(utterance);
+  const [listening, setListening] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioUrlRef = useRef<string | null>(null);
+  async function speak(text: string) {
+    setVoiceError("");
+    try {
+      const response = await fetch("/api/assistant/tts", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ text })
+      });
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "تعذر تجهيز الصوت.");
+      }
+      const blob = await response.blob();
+      if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
+      audioUrlRef.current = URL.createObjectURL(blob);
+      if (!audioRef.current) audioRef.current = new Audio();
+      audioRef.current.pause();
+      audioRef.current.src = audioUrlRef.current;
+      await audioRef.current.play();
+    } catch (error) {
+      setVoiceError(error instanceof Error ? error.message : "تعذر تشغيل الصوت.");
+    }
   }
   function listen() {
     const w = window as Window & { SpeechRecognition?: new () => any; webkitSpeechRecognition?: new () => any };
@@ -27,9 +44,22 @@ export default function StoreAssistant() {
     recognition.lang = "ar-EG";
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
+    recognition.onstart = () => { setListening(true); setVoiceError(""); };
+    recognition.onend = () => setListening(false);
     recognition.onresult = (event: any) => setValue((old) => (old ? old + " " : "") + event.results[0][0].transcript);
-    recognition.onerror = () => setVoiceError("تعذر استخدام الميكروفون. راجع إذن الميكروفون للمتصفح.");
-    recognition.start();
+    recognition.onerror = (event: any) => {
+      setListening(false);
+      const messages: Record<string, string> = {
+        "not-allowed": "اسمح للمتصفح باستخدام الميكروفون من إعدادات الموقع، وبعدها اضغط تسجيل مرة تانية.",
+        "service-not-allowed": "خدمة الإملاء الصوتي غير متاحة في المتصفح الحالي. افتح الموقع في Chrome.",
+        "no-speech": "ملحقتش أسمع كلام. اضغط الميكروفون وجرب تتكلم تاني.",
+        "audio-capture": "مش لاقي ميكروفون شغال على الجهاز.",
+        "network": "في مشكلة اتصال أثناء تحويل الكلام لنص. جرّب تاني."
+      };
+      setVoiceError(messages[event.error] || "حصلت مشكلة في بدء التسجيل. جرّب Chrome وتأكد من إذن الميكروفون.");
+    };
+    try { recognition.start(); }
+    catch { setListening(false); setVoiceError("التسجيل شغال بالفعل أو المتصفح مش قادر يبدأه. جرّب تاني."); }
   }
   async function send(text = value) {
     const content = text.trim(); if (!content || busy) return;
@@ -60,7 +90,7 @@ export default function StoreAssistant() {
       </div>
       {voiceError && <div role="status" style={{ padding: "4px 12px", color: "#b42318", fontSize: 12 }}>{voiceError}</div>}
       <div style={{ display: "flex", gap: 8, padding: "8px 10px 0" }}>
-        <button type="button" onClick={listen} style={{ flex: 1, padding: 8, border: "1px solid #ddd", borderRadius: 9, background: "transparent", cursor: "pointer" }}>🎙️ إملاء صوتي</button>
+        <button type="button" onClick={listen} style={{ flex: 1, padding: 8, border: "1px solid #ddd", borderRadius: 9, background: "transparent", cursor: "pointer" }}>{listening ? "🔴 جاري التسجيل..." : "🎙️ ابدأ التسجيل"}</button>
         <button type="button" onClick={() => setVoiceOn(!voiceOn)} aria-pressed={voiceOn} style={{ flex: 1, padding: 8, border: "1px solid #ddd", borderRadius: 9, background: voiceOn ? "#fff3ee" : "transparent", cursor: "pointer" }}>{voiceOn ? "🔊 الرد الصوتي يعمل" : "🔇 تفعيل الرد الصوتي"}</button>
       </div>
       <form onSubmit={(e) => { e.preventDefault(); void send(); }} style={{ display: "flex", gap: 8, padding: 10 }}>
