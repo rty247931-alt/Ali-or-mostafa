@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getSetting } from "@/lib/settings";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
