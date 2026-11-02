@@ -58,7 +58,7 @@ ${JSON.stringify(context)}`;
 
 export async function generateAssistantReply(messages: ChatMessage[], context: Awaited<ReturnType<typeof buildStoreContext>>) {
   const provider = String(await setting("assistant.provider", "gemini"));
-  const model = String(await setting("assistant.model", provider === "gemini" ? "gemini-2.0-flash" : "gpt-4o-mini"));
+  const model = String(await setting("assistant.model", provider === "gemini" ? "gemini-2.0-flash" : provider === "groq" ? "llama-3.3-70b-versatile" : "gpt-4o-mini"));
   const system = makeSystemPrompt(context);
   if (provider === "gemini") {
     const key = process.env.GEMINI_API_KEY;
@@ -75,10 +75,10 @@ export async function generateAssistantReply(messages: ChatMessage[], context: A
     if (!answer) throw new Error("AI_EMPTY_RESPONSE");
     return answer;
   }
-  if (provider === "openai") {
-    const key = process.env.OPENAI_API_KEY;
-    if (!key) throw new Error("AI_PROVIDER_UNSUPPORTED");
-    const base = (process.env.OPENAI_BASE_URL || "https://api.openai.com/v1").replace(/\/$/, "");
+  if (provider === "openai" || provider === "groq") {
+    const key = provider === "groq" ? process.env.GROQ_API_KEY : process.env.OPENAI_API_KEY;
+    if (!key) throw new Error("AI_API_KEY_MISSING");
+    const base = (provider === "groq" ? "https://api.groq.com/openai/v1" : (process.env.OPENAI_BASE_URL || "https://api.openai.com/v1")).replace(/\/$/, "");
     const response = await fetch(`${base}/chat/completions`, {
       method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
       body: JSON.stringify({ model, messages: [{ role: "system", content: system }, ...messages], temperature: 0.4, max_tokens: 700 }),
