@@ -44,6 +44,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="ar" dir="rtl">
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#263b2b" />
+        <link rel="icon" href="/pwa-icon.svg" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link href="https://fonts.googleapis.com/css2?family=Changa:wght@600;800&family=Cairo:wght@500;700&display=swap" rel="stylesheet" />
         <style dangerouslySetInnerHTML={{ __html: css }} />
