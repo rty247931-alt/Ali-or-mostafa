@@ -173,3 +173,33 @@ section.s .sh2 a{color:#40583B!important}
 :root[data-theme="dark"] .brs a{color:#202820!important;background:#F5F6F2!important}
 :root[data-theme="dark"] .ct:hover,
 :root[data-theme="dark"] .brs a:hover{color:#202820!important;background:#E0E9D9!important}
+
+
+/* Stage 1: improve text contrast without changing the storefront identity */
+:root{
+  --mu:#62675F;
+  --ac:#596B51;
+  --acx:#FFFFFF;
+}
+:root[data-theme="dark"]{
+  --mu:#C0C5B9;
+  --ac:#A6B19A;
+  --acx:#20231F;
+}
+.hb nav a{opacity:1}
+.br,.ci .br,.empty,.tbl td:first-child,.tl li{color:var(--mu)}
+.pg{
+  color:var(--tx);
+  line-height:1.85;
+  overflow-wrap:anywhere;
+}
+.pg h1,.pg h2,.pg h3,.pg h4{color:var(--tx);line-height:1.35}
+.pg>div{color:var(--tx);line-height:1.9}
+.pg a{color:var(--ac);text-decoration:underline;text-underline-offset:3px}
+:root[data-theme="dark"] .pg a{color:#C7D9B8}
+:root[data-theme="dark"] .ann{background:#343A32;color:#F0F2EA}
+:root[data-theme="dark"] .hero{background:#30382E;color:#F2F4ED;border-bottom-color:#46513F}
+:root[data-theme="dark"] .hero .btn{background:#A6B19A;color:#20231F;border-color:#A6B19A}
+:root[data-theme="dark"] .btn{background:var(--ac);color:var(--acx);border-color:var(--ac)}
+:root[data-theme="dark"] .btn.o{background:transparent;color:var(--tx);border-color:var(--ln)}
+:root[data-theme="dark"] .filter-more summary{color:#D5E6C8}
