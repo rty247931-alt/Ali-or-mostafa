@@ -59,7 +59,7 @@ ${JSON.stringify(context)}`;
 export async function generateAssistantReply(messages: ChatMessage[], context: Awaited<ReturnType<typeof buildStoreContext>>, override?: { provider: "gemini" | "openai" | "groq"; model: string }) {
   const savedProvider = String(await setting("assistant.provider", "gemini"));
   const provider = override?.provider ?? savedProvider;
-  const defaultModel = provider === "gemini" ? "gemini-2.0-flash" : provider === "groq" ? "llama-3.3-70b-versatile" : "gpt-4o-mini";
+  const defaultModel = provider === "gemini" ? "gemini-2.0-flash" : provider === "groq" ? "openai/gpt-oss-120b" : "gpt-4o-mini";
   const model = override?.model ?? String(await setting("assistant.model", defaultModel));
   const system = makeSystemPrompt(context);
   if (provider === "gemini") {
