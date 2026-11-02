@@ -255,3 +255,137 @@ header.top{box-shadow:0 3px 14px #17201612}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+
+/* Dark mode contrast correction: force readable foregrounds on every storefront surface */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#151914;
+  --sf:#222820;
+  --tx:#F5F7F1;
+  --mu:#D0D6C9;
+  --ln:#505A4B;
+  --im:#2D352B;
+  --ac:#B8CBAA;
+  --acx:#172015;
+}
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] main,
+:root[data-theme="dark"] section,
+:root[data-theme="dark"] .w,
+:root[data-theme="dark"] .pg,
+:root[data-theme="dark"] .pg>div,
+:root[data-theme="dark"] .pg p,
+:root[data-theme="dark"] .pg li,
+:root[data-theme="dark"] .pg span,
+:root[data-theme="dark"] .pg label{
+  color:#F5F7F1;
+}
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] h4,
+:root[data-theme="dark"] .sh2 h2,
+:root[data-theme="dark"] section.s .sh2 h2,
+:root[data-theme="dark"] .ci h3,
+:root[data-theme="dark"] .price b,
+:root[data-theme="dark"] .kp b,
+:root[data-theme="dark"] summary{
+  color:#F5F7F1!important;
+}
+:root[data-theme="dark"] p,
+:root[data-theme="dark"] .br,
+:root[data-theme="dark"] .ci .br,
+:root[data-theme="dark"] .empty,
+:root[data-theme="dark"] .tbl td:first-child,
+:root[data-theme="dark"] .tl li,
+:root[data-theme="dark"] .kp span,
+:root[data-theme="dark"] .lbl,
+:root[data-theme="dark"] .filter-more,
+:root[data-theme="dark"] .filter-more summary{
+  color:#D0D6C9!important;
+}
+:root[data-theme="dark"] a:not(.btn):not(.logo):not(.ic):not(.ft a),
+:root[data-theme="dark"] .sh2 a,
+:root[data-theme="dark"] section.s .sh2 a,
+:root[data-theme="dark"] .pg a{
+  color:#CBE5B8!important;
+}
+:root[data-theme="dark"] .cd,
+:root[data-theme="dark"] .ct,
+:root[data-theme="dark"] .box,
+:root[data-theme="dark"] .kp>div,
+:root[data-theme="dark"] .empty,
+:root[data-theme="dark"] .filter-more,
+:root[data-theme="dark"] .brs a,
+:root[data-theme="dark"] .in,
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] .o,
+:root[data-theme="dark"] .q button,
+:root[data-theme="dark"] .tabs a{
+  background-color:#222820!important;
+  color:#F5F7F1!important;
+  border-color:#505A4B!important;
+}
+:root[data-theme="dark"] .ct:hover,
+:root[data-theme="dark"] .brs a:hover,
+:root[data-theme="dark"] .o[aria-pressed="true"]{
+  background:#394735!important;
+  color:#FFFFFF!important;
+}
+:root[data-theme="dark"] .btn{
+  background:#B8CBAA!important;
+  color:#172015!important;
+  border-color:#B8CBAA!important;
+}
+:root[data-theme="dark"] .btn.o{
+  background:transparent!important;
+  color:#F5F7F1!important;
+  border-color:#87947D!important;
+}
+:root[data-theme="dark"] .hero{
+  background:#293328!important;
+  background-image:linear-gradient(125deg,#293328,#1D241D)!important;
+  color:#FFFFFF!important;
+  border-bottom-color:#56644F!important;
+}
+:root[data-theme="dark"] .hero h1,
+:root[data-theme="dark"] .hero p{color:#FFFFFF!important}
+:root[data-theme="dark"] .ann{
+  background:#394735!important;
+  color:#FFFFFF!important;
+}
+:root[data-theme="dark"] .nl{
+  background:#222820!important;
+  color:#F5F7F1!important;
+  border-color:#505A4B!important;
+}
+:root[data-theme="dark"] .nl h2,
+:root[data-theme="dark"] .nl p{color:#F5F7F1!important}
+:root[data-theme="dark"] .nl input[type=email]{
+  background:#151914!important;
+  color:#FFFFFF!important;
+  border-color:#68765F!important;
+}
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder{color:#BFC8B6!important;opacity:1}
+:root[data-theme="dark"] .toast{
+  background:#F5F7F1!important;
+  color:#172015!important;
+}
+:root[data-theme="dark"] .tg{background:#53664B;color:#fff}
+:root[data-theme="dark"] .tg.d{background:#A6534B;color:#fff}
+:root[data-theme="dark"] .ft{color:#F0F2EA}
+:root[data-theme="dark"] .ft h4{color:#FFFFFF}
+:root[data-theme="dark"] .ft a{color:#E1E8DA}
+:root[data-theme="dark"] .theme-toggle{
+  background:#303B2C!important;
+  color:#FFFFFF!important;
+  border-color:#91A184!important;
+}
+:root[data-theme="dark"] .theme-toggle:hover{
+  background:#46553F!important;
+  color:#FFFFFF!important;
+}
