@@ -17,7 +17,7 @@ const settingsSchema = z.object({
   "social.facebook": txt(300), "social.instagram": txt(300), "social.whatsapp": txt(300), "social.tiktok": txt(300),
   "shipping.trackingUrl": txt(300).refine((v) => v === "" || (/^https:\/\//.test(v) && v.includes("{tracking}")), "الرابط يبدأ بـ https:// ويحتوي {tracking}"),
   "assistant.enabled": z.boolean(),
-  "assistant.provider": z.enum(["gemini", "openai"]),
+  "assistant.provider": z.enum(["gemini", "openai", "groq"]),
   "assistant.model": txt(100).min(1),
   "order.minTotal": z.number().min(0).max(100000),
   "checkout.guest.enabled": z.boolean(),
