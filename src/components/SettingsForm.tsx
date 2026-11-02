@@ -32,14 +32,46 @@ export default function SettingsForm({ values, paymobConfigured, paymentsVerifie
     if (!file) return;
     setBusy(true); setMsg(null);
     try {
+      if (!file.type.startsWith("image/")) throw new Error("اختر ملف صورة صالح");
+      let uploadFile = file;
+      // Vercel Functions have a small request-body limit; resize/compress large phone photos in the browser first.
+      if (file.size > 3 * 1024 * 1024) {
+        try {
+          const bitmap = await createImageBitmap(file);
+          const scale = Math.min(1, 1920 / Math.max(bitmap.width, bitmap.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+          canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+          const ctx = canvas.getContext("2d");
+          if (!ctx) throw new Error("تعذر تجهيز الصورة");
+          ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+          bitmap.close();
+          const blob = await new Promise<Blob>((resolve, reject) =>
+            canvas.toBlob((result) => result ? resolve(result) : reject(new Error("تعذر ضغط الصورة")), "image/webp", 0.82)
+          );
+          uploadFile = new File([blob], file.name.replace(/\\.[^.]+$/, "") + ".webp", { type: "image/webp" });
+        } catch {
+          throw new Error("الصورة كبيرة أو صيغة الصورة غير مدعومة؛ جرّب JPG أو PNG أصغر من 3 ميجابايت");
+        }
+      }
+      if (uploadFile.size > 4 * 1024 * 1024) throw new Error("حجم الصورة بعد التجهيز أكبر من المسموح؛ اختر صورة أصغر");
       const fd = new FormData();
-      fd.set("file", file);
+      fd.set("file", uploadFile);
       fd.set("entity", "settings");
       const r = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
       const d = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(d.error ?? "تعذر رفع الصورة");
+      if (!r.ok || typeof d.url !== "string" || !d.url) throw new Error(d.error ?? "تعذر رفع الصورة");
+      // Persist this image immediately so it is not lost if the page is closed before Save is pressed.
+      const saved = await fetch("/api/admin/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [key]: d.url }),
+      });
+      const result = await saved.json().catch(() => ({}));
+      if (!saved.ok) throw new Error(result.error ?? "تم رفع الصورة لكن تعذر حفظها في إعدادات المتجر");
       setV((old) => ({ ...old, [key]: d.url }));
-      setMsg({ t: "تم رفع الصورة. اضغط حفظ الإعدادات لتثبيتها.", ok: true });
+      setMsg({ t: "تم رفع الصورة وحفظها بنجاح.", ok: true });
+      router.refresh();
     } catch (e) {
       setMsg({ t: e instanceof Error ? e.message : "تعذر رفع الصورة", ok: false });
     } finally { setBusy(false); }
