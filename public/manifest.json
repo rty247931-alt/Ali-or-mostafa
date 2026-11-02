@@ -1,0 +1,22 @@
+{
+  "id": "/",
+  "name": "Khotwa Store",
+  "short_name": "Khotwa",
+  "description": "متجر خُطوة للأحذية",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f5f0",
+  "theme_color": "#263b2b",
+  "icons": [
+    {
+      "src": "/pwa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
