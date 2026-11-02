@@ -210,7 +210,7 @@ body{background:var(--bg);color:var(--tx)}
 main{background-color:var(--bg)}
 section.s{padding-block:clamp(26px,4vw,46px) 10px}
 section.s:nth-of-type(even){background:color-mix(in srgb,var(--sf) 62%,var(--bg));}
-.hero{background-image:radial-gradient(ellipse at 85% 15%,#ffffff8c 0,transparent 42%),linear-gradient(120deg,#E7EBE1,#F3F1E9)!important}
+.hero{background-image:radial-gradient(ellipse at 85% 15%,#ffffff8c 0,transparent 42%),linear-gradient(120deg,#E7EBE1,#F3F1E9)}
 .im,.ctplaceholder,.big{background-color:var(--im)}
 .box,.empty,.filter-more,.kp>div{background:var(--sf)}
 .ann{background:color-mix(in srgb,var(--ac) 14%,var(--sf));color:var(--tx)}
@@ -228,7 +228,7 @@ header.top{box-shadow:0 3px 14px #17201612}
 .btn:focus-visible,.ic:focus-visible,.theme-toggle:focus-visible{outline:3px solid #A6B19A;outline-offset:3px}
 :root[data-theme="dark"] body{background:var(--bg);color:var(--tx)}
 :root[data-theme="dark"] section.s:nth-of-type(even){background:#252A24}
-:root[data-theme="dark"] .hero{background-image:radial-gradient(ellipse at 85% 15%,#69765b66 0,transparent 42%),linear-gradient(120deg,#30382E,#252A24)!important;color:#F2F4ED}
+:root[data-theme="dark"] .hero{background-image:radial-gradient(ellipse at 85% 15%,#69765b66 0,transparent 42%),linear-gradient(120deg,#30382E,#252A24);color:#F2F4ED}
 :root[data-theme="dark"] .ann{background:#343A32;color:#F0F2EA}
 :root[data-theme="dark"] .ct,:root[data-theme="dark"] .brs a{background:var(--sf)!important;color:var(--tx)!important}
 :root[data-theme="dark"] .ct:hover,:root[data-theme="dark"] .brs a:hover{background:#394436!important;color:#F2F4ED!important}
@@ -246,7 +246,7 @@ header.top{box-shadow:0 3px 14px #17201612}
   .theme-toggle{flex:0 0 auto}
   .logo .brand-tagline{font-size:9px}
   section.s:nth-of-type(even){border-block:1px solid var(--ln)}
-  .hero{background-image:linear-gradient(145deg,#E7EBE1,#F3F1E9)!important}
+  .hero{background-image:linear-gradient(145deg,#E7EBE1,#F3F1E9)}
 }
 @media(min-width:601px) and (max-width:900px){
   .hb{flex-wrap:wrap}
